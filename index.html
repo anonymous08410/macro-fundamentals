@@ -218,7 +218,6 @@
             color: var(--text-primary);
         }
 
-        /* News Styles */
         .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -236,7 +235,6 @@
 
         .news-item:hover {
             background-color: var(--bg-hover);
-            border-left-color: var(--accent-green);
         }
 
         .news-item.high-impact {
@@ -282,11 +280,6 @@
             color: var(--accent-amber);
         }
 
-        .news-impact.low {
-            background-color: rgba(16, 185, 129, 0.2);
-            color: var(--accent-green);
-        }
-
         .news-meta {
             display: flex;
             justify-content: space-between;
@@ -299,17 +292,11 @@
         .news-category {
             display: inline-block;
             padding: 2px 8px;
-            background-color: var(--accent-blue);
             background-color: rgba(59, 130, 246, 0.2);
             color: var(--accent-blue);
             border-radius: 3px;
             font-weight: 600;
             text-transform: uppercase;
-        }
-
-        .news-time {
-            font-size: 11px;
-            color: var(--text-muted);
         }
 
         .news-summary {
@@ -358,16 +345,17 @@
     <div class="container">
         <header>
             <h1>🌍 Macro Fundamentals Dashboard</h1>
-            <p>Real-time G10 + News + Commodities</p>
+            <p>Real-time G10 + News + Calendar + Commodities</p>
             <div class="timestamp">Last updated: <span id="lastUpdate">--:--</span></div>
         </header>
 
         <div class="nav">
             <button class="nav-btn active" onclick="switchTab('overview')">Overview</button>
-            <button class="nav-btn" onclick="switchTab('news')">News (Market Moving)</button>
+            <button class="nav-btn" onclick="switchTab('news')">📢 News</button>
             <button class="nav-btn" onclick="switchTab('rates')">Rates</button>
             <button class="nav-btn" onclick="switchTab('fx')">FX Pairs</button>
             <button class="nav-btn" onclick="switchTab('commodities')">Commodities</button>
+            <button class="nav-btn" onclick="switchTab('calendar')">📅 Calendar</button>
         </div>
 
         <!-- OVERVIEW TAB -->
@@ -451,14 +439,32 @@
                 <tbody id="commoditiesDetailBody"></tbody>
             </table>
         </div>
+
+        <!-- CALENDAR TAB -->
+        <div id="calendar" class="tab-content">
+            <h2 class="section-title">Economic Calendar</h2>
+            <table id="calendarTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Country</th>
+                        <th>Event</th>
+                        <th>Previous</th>
+                        <th>Forecast</th>
+                        <th>Actual</th>
+                        <th>Importance</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
+        </div>
     </div>
 
     <footer>
-        Real-time macro data with market-moving news. Updates every 30 seconds.
+        Real-time macro data with market-moving news & economic calendar. Updates every 30 seconds.
     </footer>
 
     <script>
-        // API URL - Change this to your Render backend URL
         const API_URL = 'https://macro-fundamentals-2.onrender.com';
 
         let data = {
@@ -466,7 +472,8 @@
             inflation: [],
             fxPairs: [],
             commodities: [],
-            news: []
+            news: [],
+            calendar: []
         };
 
         let charts = {};
@@ -477,23 +484,8 @@
                 const newData = await response.json();
                 
                 if (newData.rates && newData.rates.length > 0) {
-                    data.rates = newData.rates;
-                    data.inflation = newData.inflation;
-                    data.fxPairs = newData.fxPairs;
-                    data.commodities = newData.commodities;
+                    data = newData;
                     renderAll();
-                }
-
-                // Fetch news separately
-                try {
-                    const newsRes = await fetch(`${API_URL}/api/news`);
-                    const newsData = await newsRes.json();
-                    if (newsData.news) {
-                        data.news = newsData.news;
-                        renderNews();
-                    }
-                } catch (e) {
-                    console.log('News fetch skipped');
                 }
 
                 updateTimestamp();
@@ -551,27 +543,8 @@
             renderRates();
             renderFX();
             renderCommodities();
-        }
-
-        function renderNews() {
-            if (!data.news || data.news.length === 0) return;
-
-            const newsHtml = data.news.map(n => `
-                <div class="news-item ${n.impact.toLowerCase()}-impact">
-                    <div class="news-header">
-                        <h3 class="news-title">${n.title}</h3>
-                        <span class="news-impact ${n.impact.toLowerCase()}">${n.impact}</span>
-                    </div>
-                    <div class="news-meta">
-                        <span class="news-category">${n.category}</span>
-                        <span class="news-time">${formatTime(n.published)}</span>
-                    </div>
-                    <div class="news-summary">${n.summary}</div>
-                    <div class="news-source">📰 ${n.source}</div>
-                </div>
-            `).join('');
-
-            document.getElementById('newsGrid').innerHTML = newsHtml;
+            renderNews();
+            renderCalendar();
         }
 
         function renderOverview() {
@@ -616,6 +589,44 @@
                 </div>
             `).join('');
             document.getElementById('commoditiesGrid').innerHTML = commodHtml;
+        }
+
+        function renderNews() {
+            if (!data.news || data.news.length === 0) return;
+
+            const newsHtml = data.news.map(n => `
+                <div class="news-item ${n.impact.toLowerCase()}-impact">
+                    <div class="news-header">
+                        <h3 class="news-title">${n.title}</h3>
+                        <span class="news-impact ${n.impact.toLowerCase()}">${n.impact}</span>
+                    </div>
+                    <div class="news-meta">
+                        <span class="news-category">${n.category}</span>
+                        <span>${formatTime(n.published)}</span>
+                    </div>
+                    <div class="news-summary">${n.summary}</div>
+                    <div class="news-source">📰 ${n.source}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('newsGrid').innerHTML = newsHtml;
+        }
+
+        function renderCalendar() {
+            if (!data.calendar || data.calendar.length === 0) return;
+
+            const calHtml = data.calendar.map(c => `
+                <tr>
+                    <td>${new Date(c.date).toLocaleDateString()}</td>
+                    <td>${c.country}</td>
+                    <td>${c.event}</td>
+                    <td>${formatNumber(c.previous, 1)}</td>
+                    <td>${c.forecast ? formatNumber(c.forecast, 1) : '-'}</td>
+                    <td>${c.actual ? formatNumber(c.actual, 1) : '-'}</td>
+                    <td><strong>${c.importance}</strong></td>
+                </tr>
+            `).join('');
+            document.getElementById('calendarBody').innerHTML = calHtml;
         }
 
         function renderRates() {
@@ -674,7 +685,7 @@
                     <td class="${getChangeClass(c.change)}">${c.change > 0 ? '+' : ''}${formatNumber(c.change)}%</td>
                 </tr>
             `).join('');
-            document.getElementById('commoditiesDetailTable').innerHTML = commodHtml;
+            document.getElementById('commoditiesDetailBody').innerHTML = commodHtml;
 
             const ctx = document.getElementById('commoditiesChart');
             if (charts.commodities) charts.commodities.destroy();
@@ -704,7 +715,6 @@
             document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
         }
 
-        // Initialize
         fetchData();
         setInterval(fetchData, 30000);
         setInterval(updateTimestamp, 1000);
