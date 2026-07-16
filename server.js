@@ -30,6 +30,15 @@ const data = {
     { title: 'ECB Hikes 25bps; More to Come', source: 'Bloomberg', category: 'ECB', impact: 'High', published: new Date().toISOString(), summary: 'ECB raises to 2.25%, expects additional hikes' },
     { title: 'USD/JPY Near 160 Intervention Level', source: 'FT', category: 'FX', impact: 'High', published: new Date().toISOString(), summary: 'Yen weakness escalates; MoF intervention risk rises' },
     { title: 'Oil Rally on Hormuz Tensions', source: 'MarketWatch', category: 'Commodities', impact: 'Medium', published: new Date().toISOString(), summary: 'Brent crude breaks above $95 on supply concerns' }
+  ],
+  calendar: [
+    { date: '2026-07-20', country: 'US', event: 'CPI Release', previous: 4.3, forecast: 4.2, actual: null, importance: 'High' },
+    { date: '2026-07-22', country: 'US', event: 'NFP Release', previous: 206000, forecast: 185000, actual: null, importance: 'High' },
+    { date: '2026-07-30', country: 'US', event: 'FOMC Decision', previous: 3.50, forecast: 3.50, actual: null, importance: 'High' },
+    { date: '2026-07-30', country: 'UK', event: 'BoE Decision', previous: 3.75, forecast: 3.75, actual: null, importance: 'High' },
+    { date: '2026-07-30', country: 'Japan', event: 'BoJ Decision', previous: 1.00, forecast: 1.00, actual: null, importance: 'High' },
+    { date: '2026-08-01', country: 'EUR', event: 'ECB Decision', previous: 2.25, forecast: 2.50, actual: null, importance: 'High' },
+    { date: '2026-08-05', country: 'EUR', event: 'Inflation Release', previous: 3.2, forecast: 3.1, actual: null, importance: 'Medium' }
   ]
 };
 
@@ -43,6 +52,9 @@ const server = http.createServer((req, res) => {
   } else if (req.url === '/api/news') {
     res.writeHead(200);
     res.end(JSON.stringify({ news: data.news }));
+  } else if (req.url === '/api/calendar') {
+    res.writeHead(200);
+    res.end(JSON.stringify({ calendar: data.calendar }));
   } else if (req.url === '/api/health') {
     res.writeHead(200);
     res.end(JSON.stringify({ status: 'ok' }));
