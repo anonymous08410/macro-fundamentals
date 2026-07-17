@@ -438,42 +438,54 @@ function switchTab(tabName) {
             document.getElementById('topBar').innerHTML = html;
         }
 
+        let dashboardCurrencyLeft = 'USD';
+        let dashboardCurrencyRight = 'USD';
+        
         function renderDashboard() {
-            const curr = allData.g10Data[selectedCurrency];
-            const usd = allData.g10Data['USD'];
-            const rateDiff = curr.rate - usd.rate;
+            const currLeft = allData.g10Data[dashboardCurrencyLeft];
+            const currRight = allData.g10Data[dashboardCurrencyRight];
+            const rateDiff = currLeft.rate - currRight.rate;
             
             let html = `
-                <div style="margin-bottom: 15px;">
-                    <label style="color: var(--text-secondary); font-size: 11px; margin-right: 10px;">SELECT CURRENCY:</label>
-                    <select id="dashboardCurrency" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;" onchange="changeDashboardCurrency(this.value)">
-                        ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === selectedCurrency ? 'selected' : ''}>${c}</option>`).join('')}
-                    </select>
+                <div style="margin-bottom: 15px; display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700; text-transform: uppercase;">Left Currency:</label>
+                        <select id="dashboardCurrencyLeft" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: all 0.2s;" onchange="changeDashboardCurrencyLeft(this.value)">
+                            ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === dashboardCurrencyLeft ? 'selected' : ''}>${c}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700; text-transform: uppercase;">Right Currency:</label>
+                        <select id="dashboardCurrencyRight" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: all 0.2s;" onchange="changeDashboardCurrencyRight(this.value)">
+                            ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === dashboardCurrencyRight ? 'selected' : ''}>${c}</option>`).join('')}
+                        </select>
+                    </div>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; height: calc(100% - 40px);">
-                    <!-- COL 1: INDICATORS -->
+                    <!-- COL 1: INDICATORS (LEFT CURRENCY) -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
+                        <div style="font-size: 12px; color: var(--text-purple); font-weight: 700; margin-bottom: 8px; text-transform: uppercase;">${dashboardCurrencyLeft} Indicators</div>
                         <div class="card">
                             <div class="card-title">PPI YoY</div>
-                            <div class="card-value">${curr.macroData.ppi_yoy}%</div>
+                            <div class="card-value">${currLeft.macroData.ppi_yoy}%</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Economic Sentiment</div>
-                            <div class="card-value">${curr.leadingIndicators.economicSentiment.value}</div>
+                            <div class="card-value">${currLeft.leadingIndicators.economicSentiment.value}</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Retail Sales</div>
-                            <div class="card-value">${curr.leadingIndicators.retailSales.value}%</div>
+                            <div class="card-value">${currLeft.leadingIndicators.retailSales.value}%</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Labour Market Index</div>
-                            <div class="card-value">${curr.leadingIndicators.labourMarketIndex.value}</div>
+                            <div class="card-value">${currLeft.leadingIndicators.labourMarketIndex.value}</div>
                         </div>
                     </div>
 
-                    <!-- COL 2: THEMES -->
+                    <!-- COL 2: THEMES (LEFT CURRENCY) -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        ${curr.themes.map(t => `
+                        ${currLeft.themes.map(t => `
                             <div class="card">
                                 <div class="card-title">${t.name}</div>
                                 <div class="card-value">${t.value}${typeof t.value === 'number' ? '%' : ''}</div>
@@ -482,45 +494,64 @@ function switchTab(tabName) {
                         `).join('')}
                     </div>
 
-                    <!-- COL 3: FX PAIR -->
+                    <!-- COL 3: FX PAIR COMPARISON -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
                         <div class="card" style="padding: 30px; text-align: center; flex: 2;">
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">${selectedCurrency}/USD</div>
-                            <div style="font-size: 48px; font-weight: 700; font-family: 'Courier New', monospace; margin-bottom: 10px; color: ${rateDiff < 0 ? 'var(--accent-down)' : 'var(--accent-up)'};">${rateDiff < 0 ? '' : '+'}${rateDiff.toFixed(2)}%</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; font-weight: 700;">Pair Comparison</div>
+                            <div style="font-size: 28px; color: var(--accent-purple); margin-bottom: 15px; font-weight: 700;">${dashboardCurrencyLeft}/${dashboardCurrencyRight}</div>
+                            <div style="font-size: 42px; font-weight: 700; font-family: 'Courier New', monospace; margin-bottom: 10px; color: ${rateDiff < 0 ? 'var(--accent-down)' : 'var(--accent-up)'};">${rateDiff < 0 ? '' : '+'}${rateDiff.toFixed(2)}%</div>
                             <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Rate Differential</div>
-                            <div style="font-size: 10px; color: var(--text-muted); background: rgba(99, 102, 241, 0.1); padding: 8px; border-radius: 3px; margin-bottom: 10px;">2Y SPREAD: ${(curr.yieldCurve['2Y'] - usd.yieldCurve['2Y']).toFixed(2)}%</div>
-                            <span style="display: inline-block; padding: 4px 10px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${rateDiff < 0 ? 'rgba(239, 68, 68, 0.2); color: var(--accent-down)' : 'rgba(16, 185, 129, 0.2); color: var(--accent-up)'};">${rateDiff < 0 ? 'NEGATIVE' : 'POSITIVE'}</span>
+                            <div style="font-size: 10px; color: var(--text-muted); background: rgba(99, 102, 241, 0.1); padding: 10px; border-radius: 3px; margin-bottom: 12px; line-height: 1.6;">
+                                <div><strong>${dashboardCurrencyLeft} Rate:</strong> ${currLeft.rate}%</div>
+                                <div><strong>${dashboardCurrencyRight} Rate:</strong> ${currRight.rate}%</div>
+                                <div style="margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px;"><strong>2Y Spread:</strong> ${(currLeft.yieldCurve['2Y'] - currRight.yieldCurve['2Y']).toFixed(2)}%</div>
+                            </div>
+                            <span style="display: inline-block; padding: 6px 12px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${rateDiff < 0 ? 'rgba(239, 68, 68, 0.2); color: var(--accent-down)' : 'rgba(16, 185, 129, 0.2); color: var(--accent-up)'};">${rateDiff < 0 ? '↓ NEGATIVE' : '↑ POSITIVE'}</span>
                         </div>
                     </div>
 
-                    <!-- COL 4: RATE EXPECTATIONS -->
+                    <!-- COL 4: RATE EXPECTATIONS (RIGHT CURRENCY) -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
+                        <div style="font-size: 12px; color: var(--text-purple); font-weight: 700; margin-bottom: 8px; text-transform: uppercase;">${dashboardCurrencyRight} Indicators</div>
                         <div class="card">
                             <div class="card-title">Policy Rate</div>
-                            <div class="card-value">${curr.rate}%</div>
+                            <div class="card-value">${currRight.rate}%</div>
                             <div class="card-subtitle">Current</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Inflation</div>
-                            <div class="card-value">${curr.inflation}%</div>
+                            <div class="card-value">${currRight.inflation}%</div>
                             <div class="card-subtitle">CPI YoY</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Core Inflation</div>
-                            <div class="card-value">${curr.macroData.coreInflation}%</div>
+                            <div class="card-value">${currRight.macroData.coreInflation}%</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Unemployment</div>
-                            <div class="card-value">${curr.macroData.unemployment}%</div>
+                            <div class="card-value">${currRight.macroData.unemployment}%</div>
                         </div>
                     </div>
                 </div>
             `;
             document.getElementById('dashboard').innerHTML = html;
         }
+            dashboardCurrencyLeft = curr;
+            renderDashboard();
+        }
         
-        function changeDashboardCurrency(curr) {
-            selectedCurrency = curr;
+        function changeDashboardCurrencyRight(curr) {
+            dashboardCurrencyRight = curr;
+            renderDashboard();
+        }
+        
+        function changeDashboardCurrencyLeft(curr) {
+            dashboardCurrencyLeft = curr;
+            renderDashboard();
+        }
+        
+        function changeDashboardCurrencyRight(curr) {
+            dashboardCurrencyRight = curr;
             renderDashboard();
         }
 
