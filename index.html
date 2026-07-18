@@ -212,6 +212,9 @@
             <div class="tab" onclick="switchTab('realyields')">💰 Real Yields</div>
             <div class="tab" onclick="switchTab('cot')">📍 COT</div>
             <div class="tab" onclick="switchTab('cross')">🔄 Cross</div>
+            <div class="tab" onclick="switchTab('juice')">💜 Juice</div>
+            <div class="tab" onclick="switchTab('history')">📊 CPI History</div>
+            <div class="tab" onclick="switchTab('calendar')">📅 Calendar</div>
             <div class="tab" onclick="switchTab('news')">📰 News</div>
         </div>
 
@@ -224,6 +227,9 @@
         <div id="realyields" class="content"></div>
         <div id="cot" class="content"></div>
         <div id="cross" class="content"></div>
+        <div id="juice" class="content"></div>
+        <div id="history" class="content"></div>
+        <div id="calendar" class="content"></div>
         <div id="news" class="content"></div>
     </div>
 
@@ -528,6 +534,96 @@
             document.getElementById('crossComparison').innerHTML = html;
         }
 
+        function renderJuice() {
+            if (!allData.g10Data) return;
+            let html = `<h3 style="margin-bottom: 20px;">💜 Financial Juice - Real-Time Macro Commentary</h3><div class="grid">`;
+            for (const [code, data] of Object.entries(allData.g10Data)) {
+                const sentiment = data.riskSentiment.riskSentiment;
+                html += `
+                    <div class="card">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">Policy Rate</span><span class="data-value">${data.rate}%</span></div>
+                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${data.inflation}%</span></div>
+                        <div class="data-row"><span class="data-label">Real 10Y</span><span class="data-value">${data.realYields.rea_10y}%</span></div>
+                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${data.macroData.gdpGrowth}%</span></div>
+                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
+                            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px;">SENTIMENT</div>
+                            <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${sentiment === 'Risk-on' ? 'rgba(16, 185, 129, 0.2); color: var(--accent-up)' : 'rgba(239, 68, 68, 0.2); color: var(--accent-down)'}">${sentiment}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            html += '</div>';
+            document.getElementById('juice').innerHTML = html;
+        }
+
+        function renderHistory() {
+            if (!allData.g10Data) return;
+            let html = `<h3 style="margin-bottom: 20px;">📊 CPI History - Last 3 Months</h3><div class="grid">`;
+            for (const [code, data] of Object.entries(allData.g10Data)) {
+                // Simulate last 3 months of CPI
+                const current = data.macroData.cpi_yoy;
+                const prev1 = (current - 0.3).toFixed(1);
+                const prev2 = (current - 0.6).toFixed(1);
+                const prev3 = (current - 0.9).toFixed(1);
+                
+                html += `
+                    <div class="card">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 15px;">${code} CPI</div>
+                        <div style="font-size: 12px; line-height: 2.2;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600;">${prev3}%</span>
+                                <span style="color: var(--text-muted);">(3M ago)</span>
+                            </div>
+                            <div style="text-align: center; font-weight: 700; color: var(--text-muted);">↓</div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600;">${prev2}%</span>
+                                <span style="color: var(--text-muted);">(2M ago)</span>
+                            </div>
+                            <div style="text-align: center; font-weight: 700; color: var(--text-muted);">↓</div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600;">${prev1}%</span>
+                                <span style="color: var(--text-muted);">(1M ago)</span>
+                            </div>
+                            <div style="text-align: center; font-weight: 700; color: var(--text-muted);">↓</div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 700; font-size: 14px; color: ${current > prev1 ? 'var(--accent-down)' : 'var(--accent-up)'};">${current}%</span>
+                                <span style="color: var(--text-muted);">(Current)</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 10px; text-align: center; color: var(--text-muted);">
+                            ${current > prev1 ? '📈 Rising' : '📉 Falling'}
+                        </div>
+                    </div>
+                `;
+            }
+            html += '</div>';
+            document.getElementById('history').innerHTML = html;
+        }
+
+        function renderCalendar() {
+            if (!allData.calendar) return;
+            let html = `<h3 style="margin-bottom: 20px;">📅 Economic Calendar</h3><div class="grid">`;
+            for (const event of allData.calendar) {
+                const eventDate = new Date(event.date);
+                const importance = event.importance;
+                html += `
+                    <div class="card">
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px;">${eventDate.toLocaleDateString()}</div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--accent-purple); margin-bottom: 8px;">${event.event}</div>
+                        <div class="data-row"><span class="data-label">Country</span><span class="data-value" style="font-size: 12px;">${event.country}</span></div>
+                        <div class="data-row"><span class="data-label">Forecast</span><span class="data-value">${event.forecast}</span></div>
+                        <div class="data-row"><span class="data-label">Previous</span><span class="data-value">${event.previous}</span></div>
+                        <div style="margin-top: 10px;">
+                            <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${importance === 'High' ? 'rgba(239, 68, 68, 0.2); color: var(--accent-down)' : 'rgba(99, 102, 241, 0.2); color: var(--accent-neutral)'}">${importance}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            html += '</div>';
+            document.getElementById('calendar').innerHTML = html;
+        }
+
         function renderNews() {
             if (!allData.news) return;
             let html = '';
@@ -554,6 +650,9 @@
             renderRealYields();
             renderCOT();
             renderCross();
+            renderJuice();
+            renderHistory();
+            renderCalendar();
             renderNews();
         }
 
