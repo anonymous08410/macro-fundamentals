@@ -503,7 +503,7 @@
 
     <script>
         // ⚠️ CHANGE THIS PASSWORD TO YOUR OWN!
-        const DASHBOARD_PASSWORD = "MohammedJ"; // CHANGE THIS TO YOUR PASSWORD!
+        const DASHBOARD_PASSWORD = "Mohammed2024"; // CHANGE THIS TO YOUR PASSWORD!
 
         function checkPassword() {
             const password = document.getElementById('passwordInput').value;
@@ -811,18 +811,115 @@
 
         function renderCalendar() {
             if (!allData.calendar) return;
-            let html = `<h3 style="margin-bottom: 20px;">📅 Economic Calendar</h3><div class="grid">`;
+            let html = `
+                <h3 style="margin-bottom: 20px;">📅 Economic Calendar (ForexFactory Style)</h3>
+                <style>
+                    .ff-calendar {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    .ff-calendar thead {
+                        background: rgba(99, 102, 241, 0.2);
+                        border-bottom: 2px solid var(--border);
+                    }
+                    .ff-calendar th {
+                        padding: 12px;
+                        text-align: left;
+                        font-weight: 700;
+                        font-size: 11px;
+                        text-transform: uppercase;
+                        color: var(--accent-purple);
+                        letter-spacing: 1px;
+                    }
+                    .ff-calendar td {
+                        padding: 12px;
+                        border-bottom: 1px solid var(--border);
+                        font-size: 12px;
+                    }
+                    .ff-calendar tr:hover {
+                        background: rgba(99, 102, 241, 0.1);
+                    }
+                    .event-date {
+                        font-weight: 700;
+                        color: var(--accent-purple);
+                        min-width: 120px;
+                    }
+                    .event-time {
+                        color: var(--text-muted);
+                        font-size: 10px;
+                    }
+                    .event-country {
+                        font-weight: 600;
+                        color: var(--text-primary);
+                    }
+                    .event-name {
+                        color: var(--text-secondary);
+                        font-size: 11px;
+                    }
+                    .impact-high {
+                        background: rgba(239, 68, 68, 0.2);
+                        color: var(--accent-down);
+                        padding: 3px 8px;
+                        border-radius: 3px;
+                        font-weight: 700;
+                        font-size: 10px;
+                    }
+                    .impact-medium {
+                        background: rgba(245, 158, 11, 0.2);
+                        color: #f59e0b;
+                        padding: 3px 8px;
+                        border-radius: 3px;
+                        font-weight: 700;
+                        font-size: 10px;
+                    }
+                    .impact-low {
+                        background: rgba(16, 185, 129, 0.2);
+                        color: var(--accent-up);
+                        padding: 3px 8px;
+                        border-radius: 3px;
+                        font-weight: 700;
+                        font-size: 10px;
+                    }
+                </style>
+                <table class="ff-calendar">
+                    <thead>
+                        <tr>
+                            <th>📅 Date & Time (UTC)</th>
+                            <th>🌍 Country</th>
+                            <th>📊 Event</th>
+                            <th>⚡ Impact</th>
+                            <th>📈 Forecast</th>
+                            <th>📉 Previous</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
             for (const event of allData.calendar) {
+                const eventDate = new Date(event.date);
+                const dateStr = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const timeStr = eventDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                const impactClass = event.importance === 'High' ? 'impact-high' : event.importance === 'Medium' ? 'impact-medium' : 'impact-low';
+                
                 html += `
-                    <div class="card">
-                        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px;">${new Date(event.date).toLocaleDateString()}</div>
-                        <div style="font-weight: 700; color: var(--accent-purple); margin-bottom: 8px;">${event.event}</div>
-                        <div class="data-row"><span>Forecast</span><span class="data-value">${event.forecast}</span></div>
-                        <div class="data-row" style="border-bottom: none;"><span>Previous</span><span class="data-value">${event.previous}</span></div>
-                    </div>
+                    <tr>
+                        <td>
+                            <div class="event-date">${dateStr}</div>
+                            <div class="event-time">${timeStr} UTC</div>
+                        </td>
+                        <td><span class="event-country">${event.country}</span></td>
+                        <td><span class="event-name">${event.event}</span></td>
+                        <td><span class="${impactClass}">${event.importance}</span></td>
+                        <td style="font-weight: 600; color: var(--accent-up);">${event.forecast}</td>
+                        <td style="font-weight: 600; color: var(--accent-down);">${event.previous}</td>
+                    </tr>
                 `;
             }
-            html += '</div>';
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
             document.getElementById('calendar').innerHTML = html;
         }
 
@@ -975,12 +1072,20 @@
 
         function renderNews() {
             if (!allData.news) return;
-            let html = '';
+            let html = `<h3 style="margin-bottom: 20px;">📰 Market Headlines (Live)</h3>`;
             for (const item of allData.news) {
+                const newsDate = new Date();
+                const timeStr = newsDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                const dateStr = newsDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
                 html += `
                     <div class="card" style="margin-bottom: 10px;">
-                        <div style="font-weight: 600; margin-bottom: 4px;">${item.title}</div>
-                        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px;">${item.source}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 6px;">
+                            <div style="font-weight: 600; flex: 1;">${item.title}</div>
+                            <span style="font-size: 9px; color: var(--text-muted); white-space: nowrap; margin-left: 10px; font-weight: 700;">${timeStr}</span>
+                        </div>
+                        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px;">📍 ${item.source} • 📂 ${item.category} • 📅 ${dateStr}</div>
+                        <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.5;">${item.summary}</div>
                     </div>
                 `;
             }
@@ -1007,762 +1112,6 @@
             renderCalendar();
             renderNews();
         }
-    </script>
-</body>
-</html>
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate G10 Macro Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #0a0e1a;
-            --card: #0f1429;
-            --border: #1a2040;
-            --text-primary: #e0e6f6;
-            --text-secondary: #8b92b0;
-            --text-muted: #5a6080;
-            --accent-up: #10b981;
-            --accent-down: #ef4444;
-            --accent-neutral: #6366f1;
-            --accent-purple: #a78bfa;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 12px;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        .top-bar {
-            background: #0a0e1a;
-            border-bottom: 1px solid var(--border);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 30px;
-            overflow-x: auto;
-            font-size: 11px;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
-        .stat-value {
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-        }
-
-        .stat.up .stat-value { color: var(--accent-up); }
-        .stat.down .stat-value { color: var(--accent-down); }
-
-        .tabs {
-            display: flex;
-            gap: 0;
-            border-bottom: 1px solid var(--border);
-            overflow-x: auto;
-            background: #0a0e1a;
-            padding: 0 20px;
-        }
-
-        .tab {
-            padding: 12px 16px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .tab:hover {
-            color: var(--text-primary);
-        }
-
-        .tab.active {
-            color: var(--accent-purple);
-            border-bottom-color: var(--accent-purple);
-        }
-
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: none;
-        }
-
-        .content.active {
-            display: block;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 15px;
-        }
-
-        .card-title {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .card-value {
-            font-size: 24px;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 4px;
-        }
-
-        .card-subtitle {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 12px;
-        }
-
-        .data-label {
-            color: var(--text-secondary);
-        }
-
-        .data-value {
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-        }
-
-        .error {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: var(--accent-down);
-            padding: 20px;
-            border-radius: 4px;
-            text-align: center;
-        }
-
-        .selector {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .selector > div {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .selector select {
-            background: var(--card);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="top-bar" id="topBar">Loading...</div>
-
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</div>
-            <div class="tab" onclick="switchTab('overview')">🌍 Overview</div>
-            <div class="tab" onclick="switchTab('inflation')">📈 Inflation</div>
-            <div class="tab" onclick="switchTab('labour')">👥 Labour</div>
-            <div class="tab" onclick="switchTab('pmi')">🏭 PMI</div>
-            <div class="tab" onclick="switchTab('yields')">📉 Yields</div>
-            <div class="tab" onclick="switchTab('realyields')">💰 Real Yields</div>
-            <div class="tab" onclick="switchTab('cot')">📍 COT</div>
-            <div class="tab" onclick="switchTab('cross')">🔄 Cross</div>
-            <div class="tab" onclick="switchTab('juice')">💜 Juice</div>
-            <div class="tab" onclick="switchTab('history')">📊 CPI History</div>
-            <div class="tab" onclick="switchTab('calendar')">📅 Calendar</div>
-            <div class="tab" onclick="switchTab('news')">📰 News</div>
-        </div>
-
-        <div id="dashboard" class="content active"></div>
-        <div id="overview" class="content"></div>
-        <div id="inflation" class="content"></div>
-        <div id="labour" class="content"></div>
-        <div id="pmi" class="content"></div>
-        <div id="yields" class="content"></div>
-        <div id="realyields" class="content"></div>
-        <div id="cot" class="content"></div>
-        <div id="cross" class="content"></div>
-        <div id="juice" class="content"></div>
-        <div id="history" class="content"></div>
-        <div id="calendar" class="content"></div>
-        <div id="news" class="content"></div>
-    </div>
-
-    <script>
-        const API_URL = 'https://macro-fundamentals-2.onrender.com';
-        let allData = {};
-        let dashboardCurrencyLeft = 'USD';
-        let dashboardCurrencyRight = 'EUR';
-
-        async function initDashboard() {
-            try {
-                console.log('Fetching from:', API_URL + '/api/dashboard');
-                const res = await fetch(`${API_URL}/api/dashboard`);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                allData = await res.json();
-                console.log('Data loaded:', allData);
-                renderAllTabs();
-            } catch (e) {
-                console.error('Error:', e);
-                document.getElementById('dashboard').innerHTML = `
-                    <div class="error">
-                        <h3>Failed to load data</h3>
-                        <p>${e.message}</p>
-                        <p style="margin-top: 10px; font-size: 11px;">Backend URL: ${API_URL}/api/dashboard</p>
-                    </div>
-                `;
-            }
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        function renderTopBar() {
-            if (!allData.topStats) return;
-            const stats = allData.topStats;
-            let html = `
-                <div class="stat"><span>DOT</span><span class="stat-value">${stats.dot.value}%</span></div>
-                <div class="stat"><span>Oil</span><span class="stat-value">$${stats.oil.value}</span></div>
-                <div class="stat"><span>Gold</span><span class="stat-value">$${stats.gold.value}</span></div>
-                <div class="stat"><span>DXY</span><span class="stat-value">${stats.dxy.value}</span></div>
-                <div class="stat"><span>VIX</span><span class="stat-value">${stats.vix.value}</span></div>
-            `;
-            document.getElementById('topBar').innerHTML = html;
-        }
-
-        function renderDashboard() {
-            if (!allData.g10Data) return;
-            const currLeft = allData.g10Data[dashboardCurrencyLeft];
-            const currRight = allData.g10Data[dashboardCurrencyRight];
-            if (!currLeft || !currRight) return;
-
-            const rateDiff = currLeft.rate - currRight.rate;
-            
-            let html = `
-                <div style="margin-bottom: 15px; display: flex; gap: 20px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700;">LEFT:</label>
-                        <select onchange="dashboardCurrencyLeft=this.value; renderDashboard()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
-                            ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === dashboardCurrencyLeft ? 'selected' : ''}>${c}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700;">RIGHT:</label>
-                        <select onchange="dashboardCurrencyRight=this.value; renderDashboard()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
-                            ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === dashboardCurrencyRight ? 'selected' : ''}>${c}</option>`).join('')}
-                        </select>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; height: calc(100% - 40px);">
-                    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        <div style="font-size: 11px; color: var(--accent-purple); font-weight: 700;">${dashboardCurrencyLeft}</div>
-                        <div class="card">
-                            <div class="card-title">Policy Rate</div>
-                            <div class="card-value">${currLeft.rate}%</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Inflation</div>
-                            <div class="card-value">${currLeft.inflation}%</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Unemployment</div>
-                            <div class="card-value">${currLeft.macroData.unemployment}%</div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        <div class="card">
-                            <div class="card-title">Growth</div>
-                            <div class="card-value">${currLeft.macroData.gdpGrowth}%</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Wage Growth</div>
-                            <div class="card-value">${currLeft.macroData.wageGrowth}%</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Manufacturing PMI</div>
-                            <div class="card-value">${currLeft.macroData.manufacturingPmi}</div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        <div class="card" style="padding: 30px; text-align: center; flex: 2;">
-                            <div style="font-size: 20px; font-weight: 700; color: var(--accent-purple); margin-bottom: 15px;">${dashboardCurrencyLeft}/${dashboardCurrencyRight}</div>
-                            <div style="font-size: 42px; font-weight: 700; font-family: 'Courier New', monospace; color: ${rateDiff < 0 ? 'var(--accent-down)' : 'var(--accent-up)'};">${rateDiff < 0 ? '' : '+'}${rateDiff.toFixed(2)}%</div>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">Rate Differential</div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        <div style="font-size: 11px; color: var(--accent-purple); font-weight: 700;">${dashboardCurrencyRight}</div>
-                        <div class="card">
-                            <div class="card-title">Policy Rate</div>
-                            <div class="card-value">${currRight.rate}%</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Inflation</div>
-                            <div class="card-value">${currRight.inflation}%</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Unemployment</div>
-                            <div class="card-value">${currRight.macroData.unemployment}%</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('dashboard').innerHTML = html;
-        }
-
-        function renderOverview() {
-            if (!allData.g10Data) return;
-            let html = '<h3 style="margin-bottom: 15px;">G10 Currencies</h3><div class="grid">';
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">Rate</span><span class="data-value">${data.rate}%</span></div>
-                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${data.inflation}%</span></div>
-                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${data.macroData.gdpGrowth}%</span></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('overview').innerHTML = html;
-        }
-
-        function renderInflation() {
-            if (!allData.g10Data) return;
-            let html = '<div class="grid">';
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">CPI YoY</span><span class="data-value">${data.macroData.cpi_yoy}%</span></div>
-                        <div class="data-row"><span class="data-label">CPI MoM</span><span class="data-value">${data.macroData.cpi_mom}%</span></div>
-                        <div class="data-row"><span class="data-label">Core CPI</span><span class="data-value">${data.macroData.coreInflation}%</span></div>
-                        <div class="data-row"><span class="data-label">PPI YoY</span><span class="data-value">${data.macroData.ppi_yoy}%</span></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('inflation').innerHTML = html;
-        }
-
-        function renderLabour() {
-            if (!allData.g10Data) return;
-            let html = '<div class="grid">';
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${data.macroData.unemployment}%</span></div>
-                        <div class="data-row"><span class="data-label">Wage Growth</span><span class="data-value">${data.macroData.wageGrowth}%</span></div>
-                        <div class="data-row"><span class="data-label">Participation</span><span class="data-value">${data.macroData.participationRate}%</span></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('labour').innerHTML = html;
-        }
-
-        function renderPMI() {
-            if (!allData.g10Data) return;
-            let html = '<div class="grid">';
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">Manufacturing</span><span class="data-value">${data.macroData.manufacturingPmi}</span></div>
-                        <div class="data-row"><span class="data-label">Services</span><span class="data-value">${data.macroData.servicesPmi}</span></div>
-                        <div class="data-row"><span class="data-label">Composite</span><span class="data-value">${data.macroData.compositePmi}</span></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('pmi').innerHTML = html;
-        }
-
-        function renderYields() {
-            if (!allData.g10Data) return;
-            let html = '<div class="grid">';
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">2Y</span><span class="data-value">${data.yieldCurve['2Y'].toFixed(2)}%</span></div>
-                        <div class="data-row"><span class="data-label">5Y</span><span class="data-value">${data.yieldCurve['5Y'].toFixed(2)}%</span></div>
-                        <div class="data-row"><span class="data-label">10Y</span><span class="data-value">${data.yieldCurve['10Y'].toFixed(2)}%</span></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('yields').innerHTML = html;
-        }
-
-        function renderRealYields() {
-            if (!allData.g10Data) return;
-            let html = '<div class="grid">';
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">Real 10Y</span><span class="data-value">${data.realYields.rea_10y.toFixed(2)}%</span></div>
-                        <div class="data-row"><span class="data-label">Nominal 10Y</span><span class="data-value">${data.realYields.nom_10y.toFixed(2)}%</span></div>
-                        <div class="data-row"><span class="data-label">Breakeven</span><span class="data-value">${data.realYields.tips_breakeven.toFixed(2)}%</span></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('realyields').innerHTML = html;
-        }
-
-        function renderCOT() {
-            if (!allData.g10Data) return;
-            let html = '<div class="grid">';
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">Commercial %</span><span class="data-value">${data.cot.commercialPercent}%</span></div>
-                        <div class="data-row"><span class="data-label">Large Spec %</span><span class="data-value">${data.cot.largeSpecPercent}%</span></div>
-                        <div class="data-row"><span class="data-label">Open Interest</span><span class="data-value">${(data.cot.totalOpenInterest / 1000).toFixed(0)}K</span></div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('cot').innerHTML = html;
-        }
-
-        function renderCross() {
-            let html = `
-                <div class="selector">
-                    <div>
-                        <label style="font-size: 11px; font-weight: 700;">Currency 1:</label>
-                        <select id="c1" onchange="updateCross()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
-                            ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === 'USD' ? 'selected' : ''}>${c}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size: 11px; font-weight: 700;">Currency 2:</label>
-                        <select id="c2" onchange="updateCross()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
-                            ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === 'EUR' ? 'selected' : ''}>${c}</option>`).join('')}
-                        </select>
-                    </div>
-                </div>
-                <div id="crossComparison" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;"></div>
-            `;
-            document.getElementById('cross').innerHTML = html;
-            updateCross();
-        }
-
-        function updateCross() {
-            const c1 = document.getElementById('c1').value;
-            const c2 = document.getElementById('c2').value;
-            const d1 = allData.g10Data[c1];
-            const d2 = allData.g10Data[c2];
-            
-            let html = `
-                <div>
-                    <h3 style="margin-bottom: 15px; color: var(--accent-purple);">${c1}</h3>
-                    <div class="card">
-                        <div class="data-row"><span class="data-label">Rate</span><span class="data-value">${d1.rate}%</span></div>
-                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${d1.inflation}%</span></div>
-                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${d1.macroData.gdpGrowth}%</span></div>
-                        <div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${d1.macroData.unemployment}%</span></div>
-                    </div>
-                </div>
-                <div>
-                    <h3 style="margin-bottom: 15px; color: var(--accent-purple);">${c2}</h3>
-                    <div class="card">
-                        <div class="data-row"><span class="data-label">Rate</span><span class="data-value">${d2.rate}%</span></div>
-                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${d2.inflation}%</span></div>
-                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${d2.macroData.gdpGrowth}%</span></div>
-                        <div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${d2.macroData.unemployment}%</span></div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('crossComparison').innerHTML = html;
-        }
-
-        function renderJuice() {
-            if (!allData.g10Data || !allData.news) return;
-            
-            let html = `<h3 style="margin-bottom: 20px;">💜 Financial Juice - Macro Updates & Headlines</h3>`;
-            
-            // Create macro commentary for each currency
-            const commentary = {
-                USD: {
-                    view: 'Fed holding 3.75%. Inflation at 4.2% - sticky but falling. NFP beat expectations (206K). Real yields at 1.85% - attractive for carry trades. Policy path uncertain post-Warsh.',
-                    setup: 'USD strength on real yield advantage. Watch for inflation surprise next month.'
-                },
-                EUR: {
-                    view: 'ECB on pause at 2.25%. Eurozone weakness (0.1% growth) argues for cuts by end-2026. Manufacturing PMI 48.5 - contracting. Real yields 0.65% - unattractive.',
-                    setup: 'EUR underperformance likely. EUR/USD downside risks to 1.06. Policy divergence trade vs USD.'
-                },
-                GBP: {
-                    view: 'BoE holding at 3.75%. UK labour market strong (5.2% wage growth). Inflation sticky at 3.8%. MPC divided but eventual cuts expected. Curve flat (2s10s: 0bp).',
-                    setup: 'GBP supported by labour strength but vulnerable if growth stalls. Cable near 1.27.'
-                },
-                JPY: {
-                    view: 'BoJ hiking to 1.00% (first move in cycle). Yen weak at 160 level - MoF intervention risk. Deflation concerns persist (CPI 1.9%). USD/JPY carry still attractive.',
-                    setup: 'Intervention risk near 160. BoJ data-dependent. Watch for Fed pivot risk.'
-                },
-                CAD: {
-                    view: 'BoC cutting aggressively (50bps expected this year). Labour market deteriorating (6.0% unemployment, -40K jobs). CPI 2.7%, declining. Real yields 1.55%.',
-                    setup: 'CAD weakness structural. USD/CAD 1.38 target. Commodity-linked but domestic weakness dominant.'
-                },
-                AUD: {
-                    view: 'RBA on hold at 3.60%. Commodity super-cycle intact (China stimulus). Labour tight (3.8% unemployment). Wage growth 4.2%. Real yields 0.95% (vs USD 1.85%).',
-                    setup: 'AUD supported by commodity cycle. Policy divergence vs Fed. AUD/USD 0.71 target.'
-                },
-                NZD: {
-                    view: 'RBNZ cutting this year (to 3.75% by year-end). Growth weak (0.1%), labour stable (3.6% unemployment). CPI falling (3.1%). Commodity dependent like AUD.',
-                    setup: 'NZD underperformance likely on rate cuts. NZD/USD 0.65 target vs current 0.62.'
-                },
-                CHF: {
-                    view: 'SNB cutting bias (1.50% current). Switzerland safe-haven demand high. Inflation low (1.4%), growth stalled (0.0%). Franc strength on geopolitical risk.',
-                    setup: 'CHF outperformer on safety. Real yields 0.45% but will compress with cuts.'
-                }
-            };
-
-            // Group news by currency
-            const newsByCountry = {
-                USD: [],
-                EUR: [],
-                GBP: [],
-                JPY: [],
-                CAD: [],
-                AUD: [],
-                NZD: [],
-                CHF: []
-            };
-
-            // Simple categorization of news
-            allData.news.forEach(news => {
-                if (news.title.includes('Fed') || news.category === 'Fed' || news.title.includes('US') || news.title.includes('USD')) {
-                    newsByCountry.USD.push(news);
-                } else if (news.title.includes('ECB') || news.category === 'ECB' || news.title.includes('Euro')) {
-                    newsByCountry.EUR.push(news);
-                } else if (news.title.includes('BoE') || news.category === 'BoE' || news.title.includes('Bank of England')) {
-                    newsByCountry.GBP.push(news);
-                } else if (news.title.includes('BoJ') || news.category === 'BoJ' || news.title.includes('Yen') || news.title.includes('JPY')) {
-                    newsByCountry.JPY.push(news);
-                } else if (news.title.includes('CAD') || news.title.includes('BoC') || news.title.includes('Canada')) {
-                    newsByCountry.CAD.push(news);
-                } else if (news.title.includes('AUD') || news.title.includes('RBA') || news.title.includes('Australia')) {
-                    newsByCountry.AUD.push(news);
-                } else if (news.title.includes('NZD') || news.title.includes('RBNZ') || news.title.includes('Zealand')) {
-                    newsByCountry.NZD.push(news);
-                } else if (news.title.includes('CHF') || news.title.includes('SNB') || news.title.includes('Switzerland')) {
-                    newsByCountry.CHF.push(news);
-                }
-            });
-
-            // Render each currency with commentary + news
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                const view = commentary[code];
-                const currNews = newsByCountry[code] || [];
-                
-                html += `
-                    <div class="card" style="margin-bottom: 20px; padding: 20px;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            <div style="font-size: 24px; font-weight: 700; color: var(--accent-purple); width: 40px;">${code}</div>
-                            <div>
-                                <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);">Policy Rate: ${data.rate}% | Inflation: ${data.inflation}%</div>
-                                <div style="font-size: 10px; color: var(--text-muted);">Real 10Y: ${data.realYields.rea_10y}% | Next: ${data.rateExpectation.next6m}%</div>
-                            </div>
-                        </div>
-
-                        <div style="background: rgba(99, 102, 241, 0.05); padding: 12px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid var(--accent-neutral);">
-                            <div style="font-size: 11px; font-weight: 700; color: var(--accent-neutral); margin-bottom: 6px; text-transform: uppercase;">Macro View</div>
-                            <div style="font-size: 12px; line-height: 1.6; color: var(--text-secondary);">${view.view}</div>
-                        </div>
-
-                        <div style="background: rgba(167, 139, 250, 0.05); padding: 12px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid var(--accent-purple);">
-                            <div style="font-size: 11px; font-weight: 700; color: var(--accent-purple); margin-bottom: 6px; text-transform: uppercase;">Trading Setup</div>
-                            <div style="font-size: 12px; line-height: 1.6; color: var(--text-secondary);">${view.setup}</div>
-                        </div>
-
-                        ${currNews.length > 0 ? `
-                            <div style="border-top: 1px solid var(--border); padding-top: 12px;">
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">📰 Recent Headlines</div>
-                                ${currNews.slice(0, 2).map(news => `
-                                    <div style="margin-bottom: 8px; padding: 8px; background: rgba(${news.impact === 'High' ? '239, 68, 68' : '245, 158, 11'}, 0.1); border-radius: 3px;">
-                                        <div style="font-size: 11px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px;">${news.title}</div>
-                                        <div style="font-size: 10px; color: var(--text-muted);">${news.source} • ${news.category}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }
-
-            document.getElementById('juice').innerHTML = html;
-        }
-
-        function renderHistory() {
-            if (!allData.g10Data) return;
-            let html = `<h3 style="margin-bottom: 20px;">📊 CPI History - Last 3 Months</h3><div class="grid">`;
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                // Simulate last 3 months of CPI
-                const current = data.macroData.cpi_yoy;
-                const prev1 = (current - 0.3).toFixed(1);
-                const prev2 = (current - 0.6).toFixed(1);
-                const prev3 = (current - 0.9).toFixed(1);
-                
-                html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 15px;">${code} CPI</div>
-                        <div style="font-size: 12px; line-height: 2.2;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-weight: 600;">${prev3}%</span>
-                                <span style="color: var(--text-muted);">(3M ago)</span>
-                            </div>
-                            <div style="text-align: center; font-weight: 700; color: var(--text-muted);">↓</div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-weight: 600;">${prev2}%</span>
-                                <span style="color: var(--text-muted);">(2M ago)</span>
-                            </div>
-                            <div style="text-align: center; font-weight: 700; color: var(--text-muted);">↓</div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-weight: 600;">${prev1}%</span>
-                                <span style="color: var(--text-muted);">(1M ago)</span>
-                            </div>
-                            <div style="text-align: center; font-weight: 700; color: var(--text-muted);">↓</div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-weight: 700; font-size: 14px; color: ${current > prev1 ? 'var(--accent-down)' : 'var(--accent-up)'};">${current}%</span>
-                                <span style="color: var(--text-muted);">(Current)</span>
-                            </div>
-                        </div>
-                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 10px; text-align: center; color: var(--text-muted);">
-                            ${current > prev1 ? '📈 Rising' : '📉 Falling'}
-                        </div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('history').innerHTML = html;
-        }
-
-        function renderCalendar() {
-            if (!allData.calendar) return;
-            let html = `<h3 style="margin-bottom: 20px;">📅 Economic Calendar</h3><div class="grid">`;
-            for (const event of allData.calendar) {
-                const eventDate = new Date(event.date);
-                const importance = event.importance;
-                html += `
-                    <div class="card">
-                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px;">${eventDate.toLocaleDateString()}</div>
-                        <div style="font-size: 13px; font-weight: 700; color: var(--accent-purple); margin-bottom: 8px;">${event.event}</div>
-                        <div class="data-row"><span class="data-label">Country</span><span class="data-value" style="font-size: 12px;">${event.country}</span></div>
-                        <div class="data-row"><span class="data-label">Forecast</span><span class="data-value">${event.forecast}</span></div>
-                        <div class="data-row"><span class="data-label">Previous</span><span class="data-value">${event.previous}</span></div>
-                        <div style="margin-top: 10px;">
-                            <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${importance === 'High' ? 'rgba(239, 68, 68, 0.2); color: var(--accent-down)' : 'rgba(99, 102, 241, 0.2); color: var(--accent-neutral)'}">${importance}</span>
-                        </div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            document.getElementById('calendar').innerHTML = html;
-        }
-
-        function renderNews() {
-            if (!allData.news) return;
-            let html = '';
-            for (const item of allData.news) {
-                html += `
-                    <div class="card" style="margin-bottom: 10px;">
-                        <div style="font-weight: 600; margin-bottom: 4px;">${item.title}</div>
-                        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px;">${item.source} • ${item.category}</div>
-                        <div style="font-size: 11px; color: var(--text-secondary);">${item.summary}</div>
-                    </div>
-                `;
-            }
-            document.getElementById('news').innerHTML = html;
-        }
-
-        function renderAllTabs() {
-            renderTopBar();
-            renderDashboard();
-            renderOverview();
-            renderInflation();
-            renderLabour();
-            renderPMI();
-            renderYields();
-            renderRealYields();
-            renderCOT();
-            renderCross();
-            renderJuice();
-            renderHistory();
-            renderCalendar();
-            renderNews();
-        }
-
-        initDashboard();
     </script>
 </body>
 </html>
