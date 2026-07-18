@@ -138,32 +138,6 @@
             color: var(--text-muted);
         }
 
-        .heatmap {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .heatmap-cell {
-            padding: 12px;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .heat-hot { background: rgba(239, 68, 68, 0.3); color: var(--accent-down); }
-        .heat-warm { background: rgba(245, 158, 11, 0.3); color: #f59e0b; }
-        .heat-neutral { background: rgba(99, 102, 241, 0.3); color: var(--accent-neutral); }
-        .heat-cool { background: rgba(59, 130, 246, 0.3); color: #3b82f6; }
-        .heat-cold { background: rgba(16, 185, 129, 0.3); color: var(--accent-up); }
-
-        .comparative {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
         .data-row {
             display: flex;
             justify-content: space-between;
@@ -181,77 +155,14 @@
             font-family: 'Courier New', monospace;
         }
 
-        .setup-card {
-            background: var(--card);
-            border: 2px solid var(--border);
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--accent-down);
+            padding: 20px;
             border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 15px;
+            text-align: center;
         }
-
-        .setup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .setup-name {
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--text-primary);
-        }
-
-        .setup-confidence {
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .conf-high { background: rgba(16, 185, 129, 0.2); color: var(--accent-up); }
-        .conf-medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .conf-low { background: rgba(239, 68, 68, 0.2); color: var(--accent-down); }
-
-        .setup-details {
-            font-size: 11px;
-            color: var(--text-muted);
-            line-height: 1.8;
-        }
-
-        .news-item {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-
-        .news-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--text-primary);
-        }
-
-        .news-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .impact-badge {
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .impact-high { background: rgba(239, 68, 68, 0.2); color: var(--accent-down); }
-        .impact-medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .impact-low { background: rgba(16, 185, 129, 0.2); color: var(--accent-up); }
 
         .selector {
             display: flex;
@@ -274,56 +185,10 @@
             border-radius: 4px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .selector select:hover {
-            border-color: var(--accent-purple);
-        }
-        
-        .selector select:focus {
-            outline: none;
-            border-color: var(--accent-purple);
-            box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.1);
-        }
-
-        .cot-chart {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 4px;
-        }
-
-        .bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 10px;
-        }
-
-        .bar-label {
-            width: 100px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .bar-fill {
-            height: 20px;
-            background: var(--accent-neutral);
-            border-radius: 2px;
-            flex: 1;
-        }
-
-        .bar-value {
-            font-size: 11px;
-            font-weight: 600;
-            min-width: 50px;
-            text-align: right;
         }
 
         ::-webkit-scrollbar {
             width: 8px;
-            height: 8px;
         }
 
         ::-webkit-scrollbar-track { background: transparent; }
@@ -331,17 +196,12 @@
             background: var(--border);
             border-radius: 4px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- TOP TICKER -->
-        <div class="top-bar" id="topBar"></div>
+        <div class="top-bar" id="topBar">Loading...</div>
 
-        <!-- TABS -->
         <div class="tabs">
             <div class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</div>
             <div class="tab" onclick="switchTab('overview')">🌍 Overview</div>
@@ -352,16 +212,9 @@
             <div class="tab" onclick="switchTab('realyields')">💰 Real Yields</div>
             <div class="tab" onclick="switchTab('cot')">📍 COT</div>
             <div class="tab" onclick="switchTab('cross')">🔄 Cross</div>
-            <div class="tab" onclick="switchTab('centralbank')">🏦 CB Tracker</div>
-            <div class="tab" onclick="switchTab('risk')">⚠️ Risk</div>
-            <div class="tab" onclick="switchTab('setups')">🎯 Setups</div>
-            <div class="tab" onclick="switchTab('surprises')">💥 Surprises</div>
-            <div class="tab" onclick="switchTab('juice')">💜 Juice</div>
             <div class="tab" onclick="switchTab('news')">📰 News</div>
-            <div class="tab" onclick="switchTab('calendar')">📅 Calendar</div>
         </div>
 
-        <!-- CONTENT AREAS -->
         <div id="dashboard" class="content active"></div>
         <div id="overview" class="content"></div>
         <div id="inflation" class="content"></div>
@@ -371,161 +224,128 @@
         <div id="realyields" class="content"></div>
         <div id="cot" class="content"></div>
         <div id="cross" class="content"></div>
-        <div id="centralbank" class="content"></div>
-        <div id="risk" class="content"></div>
-        <div id="setups" class="content"></div>
-        <div id="surprises" class="content"></div>
-        <div id="juice" class="content"></div>
         <div id="news" class="content"></div>
-        <div id="calendar" class="content"></div>
     </div>
 
     <script>
         const API_URL = 'https://macro-fundamentals-2.onrender.com';
         let allData = {};
-        let selectedCurrency = 'USD';
+        let dashboardCurrencyLeft = 'USD';
+        let dashboardCurrencyRight = 'EUR';
 
-function switchTab(tabName) {
-            // Hide all
+        async function initDashboard() {
+            try {
+                console.log('Fetching from:', API_URL + '/api/dashboard');
+                const res = await fetch(`${API_URL}/api/dashboard`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                allData = await res.json();
+                console.log('Data loaded:', allData);
+                renderAllTabs();
+            } catch (e) {
+                console.error('Error:', e);
+                document.getElementById('dashboard').innerHTML = `
+                    <div class="error">
+                        <h3>Failed to load data</h3>
+                        <p>${e.message}</p>
+                        <p style="margin-top: 10px; font-size: 11px;">Backend URL: ${API_URL}/api/dashboard</p>
+                    </div>
+                `;
+            }
+        }
+
+        function switchTab(tabName) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            
-            // Show selected
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
         }
 
         function renderTopBar() {
+            if (!allData.topStats) return;
             const stats = allData.topStats;
             let html = `
-                <div class="stat up">
-                    <span>DOT</span>
-                    <span class="stat-value">${stats.dot.value}%</span>
-                </div>
-                <div class="stat up">
-                    <span>Institutions</span>
-                    <span class="stat-value">${stats.institutions.value}%</span>
-                </div>
-                <div class="stat up">
-                    <span>Retail</span>
-                    <span class="stat-value">${stats.retail.value}%</span>
-                </div>
-                <div class="stat down">
-                    <span>Oil</span>
-                    <span class="stat-value">$${stats.oil.value}</span>
-                </div>
-                <div class="stat down">
-                    <span>Gold</span>
-                    <span class="stat-value">$${stats.gold.value}</span>
-                </div>
-                <div class="stat down">
-                    <span>Silver</span>
-                    <span class="stat-value">$${stats.silver.value}</span>
-                </div>
-                <div class="stat up">
-                    <span>DXY</span>
-                    <span class="stat-value">${stats.dxy.value}</span>
-                </div>
-                <div class="stat up">
-                    <span>VIX</span>
-                    <span class="stat-value">${stats.vix.value}</span>
-                </div>
-                <div class="stat up">
-                    <span>US HY OAS</span>
-                    <span class="stat-value">${stats.usHY}</span>
-                </div>
+                <div class="stat"><span>DOT</span><span class="stat-value">${stats.dot.value}%</span></div>
+                <div class="stat"><span>Oil</span><span class="stat-value">$${stats.oil.value}</span></div>
+                <div class="stat"><span>Gold</span><span class="stat-value">$${stats.gold.value}</span></div>
+                <div class="stat"><span>DXY</span><span class="stat-value">${stats.dxy.value}</span></div>
+                <div class="stat"><span>VIX</span><span class="stat-value">${stats.vix.value}</span></div>
             `;
             document.getElementById('topBar').innerHTML = html;
         }
 
-        let dashboardCurrencyLeft = 'USD';
-        let dashboardCurrencyRight = 'USD';
-        
         function renderDashboard() {
+            if (!allData.g10Data) return;
             const currLeft = allData.g10Data[dashboardCurrencyLeft];
             const currRight = allData.g10Data[dashboardCurrencyRight];
+            if (!currLeft || !currRight) return;
+
             const rateDiff = currLeft.rate - currRight.rate;
             
             let html = `
-                <div style="margin-bottom: 15px; display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="margin-bottom: 15px; display: flex; gap: 20px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700; text-transform: uppercase;">Left Currency:</label>
-                        <select id="dashboardCurrencyLeft" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: all 0.2s;" onchange="changeDashboardCurrencyLeft(this.value)">
+                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700;">LEFT:</label>
+                        <select onchange="dashboardCurrencyLeft=this.value; renderDashboard()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
                             ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === dashboardCurrencyLeft ? 'selected' : ''}>${c}</option>`).join('')}
                         </select>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700; text-transform: uppercase;">Right Currency:</label>
-                        <select id="dashboardCurrencyRight" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: all 0.2s;" onchange="changeDashboardCurrencyRight(this.value)">
+                        <label style="color: var(--text-secondary); font-size: 11px; font-weight: 700;">RIGHT:</label>
+                        <select onchange="dashboardCurrencyRight=this.value; renderDashboard()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
                             ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === dashboardCurrencyRight ? 'selected' : ''}>${c}</option>`).join('')}
                         </select>
                     </div>
                 </div>
+
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; height: calc(100% - 40px);">
-                    <!-- COL 1: INDICATORS (LEFT CURRENCY) -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        <div style="font-size: 12px; color: var(--text-purple); font-weight: 700; margin-bottom: 8px; text-transform: uppercase;">${dashboardCurrencyLeft} Indicators</div>
+                        <div style="font-size: 11px; color: var(--accent-purple); font-weight: 700;">${dashboardCurrencyLeft}</div>
                         <div class="card">
-                            <div class="card-title">PPI YoY</div>
-                            <div class="card-value">${currLeft.macroData.ppi_yoy}%</div>
+                            <div class="card-title">Policy Rate</div>
+                            <div class="card-value">${currLeft.rate}%</div>
                         </div>
                         <div class="card">
-                            <div class="card-title">Economic Sentiment</div>
-                            <div class="card-value">${currLeft.leadingIndicators.economicSentiment.value}</div>
+                            <div class="card-title">Inflation</div>
+                            <div class="card-value">${currLeft.inflation}%</div>
                         </div>
                         <div class="card">
-                            <div class="card-title">Retail Sales</div>
-                            <div class="card-value">${currLeft.leadingIndicators.retailSales.value}%</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Labour Market Index</div>
-                            <div class="card-value">${currLeft.leadingIndicators.labourMarketIndex.value}</div>
+                            <div class="card-title">Unemployment</div>
+                            <div class="card-value">${currLeft.macroData.unemployment}%</div>
                         </div>
                     </div>
 
-                    <!-- COL 2: THEMES (LEFT CURRENCY) -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        ${currLeft.themes.map(t => `
-                            <div class="card">
-                                <div class="card-title">${t.name}</div>
-                                <div class="card-value">${t.value}${typeof t.value === 'number' ? '%' : ''}</div>
-                                <span style="display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; background: rgba(99, 102, 241, 0.2); color: var(--accent-neutral);">${t.sentiment}</span>
-                            </div>
-                        `).join('')}
+                        <div class="card">
+                            <div class="card-title">Growth</div>
+                            <div class="card-value">${currLeft.macroData.gdpGrowth}%</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Wage Growth</div>
+                            <div class="card-value">${currLeft.macroData.wageGrowth}%</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Manufacturing PMI</div>
+                            <div class="card-value">${currLeft.macroData.manufacturingPmi}</div>
+                        </div>
                     </div>
 
-                    <!-- COL 3: FX PAIR COMPARISON -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
                         <div class="card" style="padding: 30px; text-align: center; flex: 2;">
-                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; font-weight: 700;">Pair Comparison</div>
-                            <div style="font-size: 28px; color: var(--accent-purple); margin-bottom: 15px; font-weight: 700;">${dashboardCurrencyLeft}/${dashboardCurrencyRight}</div>
-                            <div style="font-size: 42px; font-weight: 700; font-family: 'Courier New', monospace; margin-bottom: 10px; color: ${rateDiff < 0 ? 'var(--accent-down)' : 'var(--accent-up)'};">${rateDiff < 0 ? '' : '+'}${rateDiff.toFixed(2)}%</div>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Rate Differential</div>
-                            <div style="font-size: 10px; color: var(--text-muted); background: rgba(99, 102, 241, 0.1); padding: 10px; border-radius: 3px; margin-bottom: 12px; line-height: 1.6;">
-                                <div><strong>${dashboardCurrencyLeft} Rate:</strong> ${currLeft.rate}%</div>
-                                <div><strong>${dashboardCurrencyRight} Rate:</strong> ${currRight.rate}%</div>
-                                <div style="margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px;"><strong>2Y Spread:</strong> ${(currLeft.yieldCurve['2Y'] - currRight.yieldCurve['2Y']).toFixed(2)}%</div>
-                            </div>
-                            <span style="display: inline-block; padding: 6px 12px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${rateDiff < 0 ? 'rgba(239, 68, 68, 0.2); color: var(--accent-down)' : 'rgba(16, 185, 129, 0.2); color: var(--accent-up)'};">${rateDiff < 0 ? '↓ NEGATIVE' : '↑ POSITIVE'}</span>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--accent-purple); margin-bottom: 15px;">${dashboardCurrencyLeft}/${dashboardCurrencyRight}</div>
+                            <div style="font-size: 42px; font-weight: 700; font-family: 'Courier New', monospace; color: ${rateDiff < 0 ? 'var(--accent-down)' : 'var(--accent-up)'};">${rateDiff < 0 ? '' : '+'}${rateDiff.toFixed(2)}%</div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">Rate Differential</div>
                         </div>
                     </div>
 
-                    <!-- COL 4: RATE EXPECTATIONS (RIGHT CURRENCY) -->
                     <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
-                        <div style="font-size: 12px; color: var(--text-purple); font-weight: 700; margin-bottom: 8px; text-transform: uppercase;">${dashboardCurrencyRight} Indicators</div>
+                        <div style="font-size: 11px; color: var(--accent-purple); font-weight: 700;">${dashboardCurrencyRight}</div>
                         <div class="card">
                             <div class="card-title">Policy Rate</div>
                             <div class="card-value">${currRight.rate}%</div>
-                            <div class="card-subtitle">Current</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Inflation</div>
                             <div class="card-value">${currRight.inflation}%</div>
-                            <div class="card-subtitle">CPI YoY</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-title">Core Inflation</div>
-                            <div class="card-value">${currRight.macroData.coreInflation}%</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Unemployment</div>
@@ -536,219 +356,124 @@ function switchTab(tabName) {
             `;
             document.getElementById('dashboard').innerHTML = html;
         }
-            dashboardCurrencyLeft = curr;
-            renderDashboard();
-        }
-        
-        function changeDashboardCurrencyRight(curr) {
-            dashboardCurrencyRight = curr;
-            renderDashboard();
-        }
-        
-        function changeDashboardCurrencyLeft(curr) {
-            dashboardCurrencyLeft = curr;
-            renderDashboard();
-        }
-        
-        function changeDashboardCurrencyRight(curr) {
-            dashboardCurrencyRight = curr;
-            renderDashboard();
-        }
 
         function renderOverview() {
-            let html = `
-                <h3 style="margin-bottom: 15px;">G10 Currencies Sentiment Heatmap</h3>
-                <div class="heatmap">
-            `;
+            if (!allData.g10Data) return;
+            let html = '<h3 style="margin-bottom: 15px;">G10 Currencies</h3><div class="grid">';
             for (const [code, data] of Object.entries(allData.g10Data)) {
-                let heatClass = 'heat-neutral';
-                if (data.rateExpectation.next6m > data.rate) heatClass = 'heat-hot';
-                else if (data.rateExpectation.next6m < data.rate) heatClass = 'heat-cold';
-                
                 html += `
-                    <div class="heatmap-cell ${heatClass}">
-                        <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">${code}</div>
-                        <div style="font-size: 11px;">${data.rate}% → ${data.rateExpectation.next6m}%</div>
+                    <div class="card">
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">Rate</span><span class="data-value">${data.rate}%</span></div>
+                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${data.inflation}%</span></div>
+                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${data.macroData.gdpGrowth}%</span></div>
                     </div>
                 `;
             }
-            html += `</div>`;
+            html += '</div>';
             document.getElementById('overview').innerHTML = html;
         }
 
         function renderInflation() {
-            let html = `<div class="grid">`;
+            if (!allData.g10Data) return;
+            let html = '<div class="grid">';
             for (const [code, data] of Object.entries(allData.g10Data)) {
                 html += `
                     <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="data-row">
-                            <span class="data-label">CPI YoY</span>
-                            <span class="data-value">${data.macroData.cpi_yoy}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">CPI MoM</span>
-                            <span class="data-value">${data.macroData.cpi_mom}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Core CPI</span>
-                            <span class="data-value">${data.macroData.coreInflation}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">PPI YoY</span>
-                            <span class="data-value">${data.macroData.ppi_yoy}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">3M Ann</span>
-                            <span class="data-value">${data.macroData.cpi_3m}%</span>
-                        </div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">CPI YoY</span><span class="data-value">${data.macroData.cpi_yoy}%</span></div>
+                        <div class="data-row"><span class="data-label">CPI MoM</span><span class="data-value">${data.macroData.cpi_mom}%</span></div>
+                        <div class="data-row"><span class="data-label">Core CPI</span><span class="data-value">${data.macroData.coreInflation}%</span></div>
+                        <div class="data-row"><span class="data-label">PPI YoY</span><span class="data-value">${data.macroData.ppi_yoy}%</span></div>
                     </div>
                 `;
             }
-            html += `</div>`;
+            html += '</div>';
             document.getElementById('inflation').innerHTML = html;
         }
 
         function renderLabour() {
-            let html = `<div class="grid">`;
+            if (!allData.g10Data) return;
+            let html = '<div class="grid">';
             for (const [code, data] of Object.entries(allData.g10Data)) {
                 html += `
                     <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="data-row">
-                            <span class="data-label">Unemployment</span>
-                            <span class="data-value">${data.macroData.unemployment}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Wage Growth</span>
-                            <span class="data-value">${data.macroData.wageGrowth}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Part. Rate</span>
-                            <span class="data-value">${data.macroData.participationRate}%</span>
-                        </div>
-                        ${data.macroData.nfp ? `
-                            <div class="data-row">
-                                <span class="data-label">NFP</span>
-                                <span class="data-value">${data.macroData.nfp > 0 ? '+' : ''}${(data.macroData.nfp / 1000).toFixed(0)}K</span>
-                            </div>
-                        ` : ''}
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${data.macroData.unemployment}%</span></div>
+                        <div class="data-row"><span class="data-label">Wage Growth</span><span class="data-value">${data.macroData.wageGrowth}%</span></div>
+                        <div class="data-row"><span class="data-label">Participation</span><span class="data-value">${data.macroData.participationRate}%</span></div>
                     </div>
                 `;
             }
-            html += `</div>`;
+            html += '</div>';
             document.getElementById('labour').innerHTML = html;
         }
 
         function renderPMI() {
-            let html = `<div class="grid">`;
+            if (!allData.g10Data) return;
+            let html = '<div class="grid">';
             for (const [code, data] of Object.entries(allData.g10Data)) {
                 html += `
                     <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="data-row">
-                            <span class="data-label">Manufacturing</span>
-                            <span class="data-value">${data.macroData.manufacturingPmi}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Services</span>
-                            <span class="data-value">${data.macroData.servicesPmi}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Composite</span>
-                            <span class="data-value">${data.macroData.compositePmi}</span>
-                        </div>
-                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text-muted);">
-                            ${data.macroData.manufacturingPmi > 50 ? '✅ Expanding' : '❌ Contracting'}
-                        </div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">Manufacturing</span><span class="data-value">${data.macroData.manufacturingPmi}</span></div>
+                        <div class="data-row"><span class="data-label">Services</span><span class="data-value">${data.macroData.servicesPmi}</span></div>
+                        <div class="data-row"><span class="data-label">Composite</span><span class="data-value">${data.macroData.compositePmi}</span></div>
                     </div>
                 `;
             }
-            html += `</div>`;
+            html += '</div>';
             document.getElementById('pmi').innerHTML = html;
         }
 
         function renderYields() {
-            let html = `<div class="grid">`;
+            if (!allData.g10Data) return;
+            let html = '<div class="grid">';
             for (const [code, data] of Object.entries(allData.g10Data)) {
                 html += `
                     <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="data-row">
-                            <span class="data-label">2Y</span>
-                            <span class="data-value">${data.yieldCurve['2Y'].toFixed(2)}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">5Y</span>
-                            <span class="data-value">${data.yieldCurve['5Y'].toFixed(2)}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">10Y</span>
-                            <span class="data-value">${data.yieldCurve['10Y'].toFixed(2)}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">2s10s</span>
-                            <span class="data-value">${data.yieldCurve.spread_2s10s}bp</span>
-                        </div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">2Y</span><span class="data-value">${data.yieldCurve['2Y'].toFixed(2)}%</span></div>
+                        <div class="data-row"><span class="data-label">5Y</span><span class="data-value">${data.yieldCurve['5Y'].toFixed(2)}%</span></div>
+                        <div class="data-row"><span class="data-label">10Y</span><span class="data-value">${data.yieldCurve['10Y'].toFixed(2)}%</span></div>
                     </div>
                 `;
             }
-            html += `</div>`;
+            html += '</div>';
             document.getElementById('yields').innerHTML = html;
         }
 
         function renderRealYields() {
-            let html = `<div class="grid">`;
+            if (!allData.g10Data) return;
+            let html = '<div class="grid">';
             for (const [code, data] of Object.entries(allData.g10Data)) {
                 html += `
                     <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="data-row">
-                            <span class="data-label">Real 10Y</span>
-                            <span class="data-value">${data.realYields.rea_10y.toFixed(2)}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Nominal 10Y</span>
-                            <span class="data-value">${data.realYields.nom_10y.toFixed(2)}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Breakeven</span>
-                            <span class="data-value">${data.realYields.tips_breakeven.toFixed(2)}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Term Premium</span>
-                            <span class="data-value">${data.realYields.termPremium.toFixed(2)}%</span>
-                        </div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">Real 10Y</span><span class="data-value">${data.realYields.rea_10y.toFixed(2)}%</span></div>
+                        <div class="data-row"><span class="data-label">Nominal 10Y</span><span class="data-value">${data.realYields.nom_10y.toFixed(2)}%</span></div>
+                        <div class="data-row"><span class="data-label">Breakeven</span><span class="data-value">${data.realYields.tips_breakeven.toFixed(2)}%</span></div>
                     </div>
                 `;
             }
-            html += `</div>`;
+            html += '</div>';
             document.getElementById('realyields').innerHTML = html;
         }
 
         function renderCOT() {
-            let html = `<div class="grid">`;
+            if (!allData.g10Data) return;
+            let html = '<div class="grid">';
             for (const [code, data] of Object.entries(allData.g10Data)) {
-                const cot = data.cot;
                 html += `
                     <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="cot-chart">
-                            <div class="bar">
-                                <div class="bar-label">Commercial</div>
-                                <div class="bar-fill" style="width: ${50 + (cot.commercialPercent / 2)}%; background: ${cot.commercialPercent > 0 ? 'var(--accent-down)' : 'var(--accent-up)'}"></div>
-                                <div class="bar-value">${cot.commercialPercent}%</div>
-                            </div>
-                            <div class="bar">
-                                <div class="bar-label">Large Spec</div>
-                                <div class="bar-fill" style="width: ${50 + (cot.largeSpecPercent / 2)}%; background: ${cot.largeSpecPercent > 0 ? 'var(--accent-down)' : 'var(--accent-up)'}"></div>
-                                <div class="bar-value">${cot.largeSpecPercent}%</div>
-                            </div>
-                        </div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
+                        <div class="data-row"><span class="data-label">Commercial %</span><span class="data-value">${data.cot.commercialPercent}%</span></div>
+                        <div class="data-row"><span class="data-label">Large Spec %</span><span class="data-value">${data.cot.largeSpecPercent}%</span></div>
+                        <div class="data-row"><span class="data-label">Open Interest</span><span class="data-value">${(data.cot.totalOpenInterest / 1000).toFixed(0)}K</span></div>
                     </div>
                 `;
             }
-            html += `</div>`;
+            html += '</div>';
             document.getElementById('cot').innerHTML = html;
         }
 
@@ -756,238 +481,66 @@ function switchTab(tabName) {
             let html = `
                 <div class="selector">
                     <div>
-                        <label style="color: var(--text-secondary); font-size: 11px; margin-right: 8px;">Currency 1:</label>
-                        <select id="c1" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                        <label style="font-size: 11px; font-weight: 700;">Currency 1:</label>
+                        <select id="c1" onchange="updateCross()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
                             ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === 'USD' ? 'selected' : ''}>${c}</option>`).join('')}
                         </select>
                     </div>
                     <div>
-                        <label style="color: var(--text-secondary); font-size: 11px; margin-right: 8px;">Currency 2:</label>
-                        <select id="c2" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                        <label style="font-size: 11px; font-weight: 700;">Currency 2:</label>
+                        <select id="c2" onchange="updateCross()" style="background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
                             ${Object.keys(allData.g10Data).map(c => `<option value="${c}" ${c === 'EUR' ? 'selected' : ''}>${c}</option>`).join('')}
                         </select>
                     </div>
                 </div>
-                <div class="comparative">
-                    <div id="compareC1"></div>
-                    <div id="compareC2"></div>
-                </div>
+                <div id="crossComparison" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;"></div>
             `;
             document.getElementById('cross').innerHTML = html;
-            
-            // Attach event listeners AFTER rendering
-            document.getElementById('c1').addEventListener('change', updateCrossComparison);
-            document.getElementById('c2').addEventListener('change', updateCrossComparison);
-            
-            // Initial render
-            updateCrossComparison();
+            updateCross();
         }
-        
-        function updateCrossComparison() {
-            const c1 = document.getElementById('c1').value || 'USD';
-            const c2 = document.getElementById('c2').value || 'EUR';
-            
+
+        function updateCross() {
+            const c1 = document.getElementById('c1').value;
+            const c2 = document.getElementById('c2').value;
             const d1 = allData.g10Data[c1];
             const d2 = allData.g10Data[c2];
             
-            let html1 = `<h3 style="margin-bottom: 15px; color: var(--accent-purple);">${c1} ${d1.flag}</h3><div class="card">`;
-            html1 += `<div class="data-row"><span class="data-label">Rate</span><span class="data-value">${d1.rate}%</span></div>`;
-            html1 += `<div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${d1.inflation}%</span></div>`;
-            html1 += `<div class="data-row"><span class="data-label">Real 10Y</span><span class="data-value">${d1.realYields.rea_10y}%</span></div>`;
-            html1 += `<div class="data-row"><span class="data-label">Growth</span><span class="data-value">${d1.macroData.gdpGrowth}%</span></div>`;
-            html1 += `<div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${d1.macroData.unemployment}%</span></div>`;
-            html1 += `<div class="data-row"><span class="data-label">Wage Growth</span><span class="data-value">${d1.macroData.wageGrowth}%</span></div>`;
-            html1 += `<div class="data-row"><span class="data-label">Manufacturing PMI</span><span class="data-value">${d1.macroData.manufacturingPmi}</span></div>`;
-            html1 += `<div class="data-row"><span class="data-label">Next Rate Move</span><span class="data-value">${d1.rateExpectation.next6m}%</span></div>`;
-            html1 += `</div>`;
-            document.getElementById('compareC1').innerHTML = html1;
-            
-            let html2 = `<h3 style="margin-bottom: 15px; color: var(--accent-purple);">${c2} ${d2.flag}</h3><div class="card">`;
-            html2 += `<div class="data-row"><span class="data-label">Rate</span><span class="data-value">${d2.rate}%</span></div>`;
-            html2 += `<div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${d2.inflation}%</span></div>`;
-            html2 += `<div class="data-row"><span class="data-label">Real 10Y</span><span class="data-value">${d2.realYields.rea_10y}%</span></div>`;
-            html2 += `<div class="data-row"><span class="data-label">Growth</span><span class="data-value">${d2.macroData.gdpGrowth}%</span></div>`;
-            html2 += `<div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${d2.macroData.unemployment}%</span></div>`;
-            html2 += `<div class="data-row"><span class="data-label">Wage Growth</span><span class="data-value">${d2.macroData.wageGrowth}%</span></div>`;
-            html2 += `<div class="data-row"><span class="data-label">Manufacturing PMI</span><span class="data-value">${d2.macroData.manufacturingPmi}</span></div>`;
-            html2 += `<div class="data-row"><span class="data-label">Next Rate Move</span><span class="data-value">${d2.rateExpectation.next6m}%</span></div>`;
-            html2 += `</div>`;
-            document.getElementById('compareC2').innerHTML = html2;
-        }
-
-        function renderCentralBank() {
-            let html = `<div class="grid">`;
-            for (const cb of allData.centralBanks) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">${cb.bank}</div>
-                        <div style="font-size: 16px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${cb.country}</div>
-                        <div class="data-row">
-                            <span class="data-label">Policy Rate</span>
-                            <span class="data-value">${cb.rate}%</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Next Meeting</span>
-                            <span class="data-value" style="font-size: 11px;">${new Date(cb.nextMeeting).toLocaleDateString()}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Decision</span>
-                            <span style="padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; ${cb.decision === 'Hike' ? 'background: rgba(239, 68, 68, 0.2); color: var(--accent-down)' : cb.decision === 'Cut' ? 'background: rgba(16, 185, 129, 0.2); color: var(--accent-up)' : 'background: rgba(99, 102, 241, 0.2); color: var(--accent-neutral)'}">${cb.decision}</span>
-                        </div>
-                    </div>
-                `;
-            }
-            html += `</div>`;
-            document.getElementById('centralbank').innerHTML = html;
-        }
-
-        function renderRisk() {
-            let html = `<div class="grid">`;
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                const risk = data.riskSentiment;
-                html += `
-                    <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="data-row">
-                            <span class="data-label">Vol (IV)</span>
-                            <span class="data-value">${risk.equity_implied_vol.toFixed(1)}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Risk Reversal</span>
-                            <span class="data-value">${risk.riskReversal_1m.toFixed(1)}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Put/Call</span>
-                            <span class="data-value">${risk.put_call_ratio.toFixed(2)}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Sentiment</span>
-                            <span style="padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${risk.riskSentiment === 'Risk-on' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; color: ${risk.riskSentiment === 'Risk-on' ? 'var(--accent-up)' : 'var(--accent-down)'}">${risk.riskSentiment}</span>
-                        </div>
-                    </div>
-                `;
-            }
-            html += `</div>`;
-            document.getElementById('risk').innerHTML = html;
-        }
-
-        function renderSetups() {
-            let html = '';
-            for (const setup of allData.tradingSetups) {
-                html += `
-                    <div class="setup-card">
-                        <div class="setup-header">
-                            <div class="setup-name">${setup.name}</div>
-                            <div class="setup-confidence conf-${setup.confidence.toLowerCase()}">${setup.confidence} Confidence</div>
-                        </div>
-                        <div class="setup-details">
-                            <div><strong>Rationale:</strong> ${setup.rationale}</div>
-                            <div style="margin-top: 8px;"><strong>Entry:</strong> ${setup.entry} | <strong>Target:</strong> ${setup.target} | <strong>Stop:</strong> ${setup.stop}</div>
-                            <div style="margin-top: 8px;"><strong>R:R:</strong> ${setup.riskReward} | <strong>Timeframe:</strong> ${setup.timeframe}</div>
-                            <div style="margin-top: 8px;"><strong>Catalyst:</strong> ${setup.catalyst}</div>
-                        </div>
-                    </div>
-                `;
-            }
-            document.getElementById('setups').innerHTML = html;
-        }
-
-        function renderSurprises() {
-            let html = `<div class="grid">`;
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                const surp = data.surprises;
-                html += `
-                    <div class="card">
-                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--accent-purple);">${code}</div>
-                        <div class="data-row">
-                            <span class="data-label">Citi Surp Idx</span>
-                            <span class="data-value">${surp.cisiEconomicSurpriseIndex}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">NFP Surprise</span>
-                            <span class="data-value">${surp.nfpSurprise > 0 ? '+' : ''}${(surp.nfpSurprise / 1000).toFixed(0)}K</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">CPI Surprise</span>
-                            <span class="data-value">${surp.cpiSurprise.toFixed(1)}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Beat %</span>
-                            <span class="data-value">${surp.surveyBeatPercent}%</span>
-                        </div>
-                    </div>
-                `;
-            }
-            html += `</div>`;
-            document.getElementById('surprises').innerHTML = html;
-        }
-
-        function renderJuice() {
             let html = `
-                <h3 style="margin-bottom: 15px;">💜 Financial Juice - Real-Time Macro Commentary</h3>
-                <div class="grid">
-            `;
-            for (const [code, data] of Object.entries(allData.g10Data)) {
-                html += `
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--accent-purple);">${c1}</h3>
                     <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 8px;">${code} ${data.flag}</div>
-                        <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.6;">
-                            <strong>Rate:</strong> ${data.rate}% | <strong>Next:</strong> ${data.rateExpectation.next6m}% (6m)<br>
-                            <strong>Inflation:</strong> ${data.inflation}% YoY | <strong>Growth:</strong> ${data.macroData.gdpGrowth}%<br>
-                            <strong>Real Yield:</strong> ${data.realYields.rea_10y}% | <strong>Surprise:</strong> ${data.surprises.cisiEconomicSurpriseIndex > 0 ? '✅ Beat' : '❌ Miss'}<br>
-                            <strong>Sentiment:</strong> <span style="padding: 2px 4px; border-radius: 2px; font-size: 10px; ${data.riskSentiment.riskSentiment === 'Risk-on' ? 'background: rgba(16, 185, 129, 0.2); color: var(--accent-up)' : 'background: rgba(239, 68, 68, 0.2); color: var(--accent-down)'}">${data.riskSentiment.riskSentiment}</span>
-                        </div>
+                        <div class="data-row"><span class="data-label">Rate</span><span class="data-value">${d1.rate}%</span></div>
+                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${d1.inflation}%</span></div>
+                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${d1.macroData.gdpGrowth}%</span></div>
+                        <div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${d1.macroData.unemployment}%</span></div>
                     </div>
-                `;
-            }
-            html += `</div>`;
-            document.getElementById('juice').innerHTML = html;
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--accent-purple);">${c2}</h3>
+                    <div class="card">
+                        <div class="data-row"><span class="data-label">Rate</span><span class="data-value">${d2.rate}%</span></div>
+                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${d2.inflation}%</span></div>
+                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${d2.macroData.gdpGrowth}%</span></div>
+                        <div class="data-row"><span class="data-label">Unemployment</span><span class="data-value">${d2.macroData.unemployment}%</span></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('crossComparison').innerHTML = html;
         }
 
         function renderNews() {
+            if (!allData.news) return;
             let html = '';
             for (const item of allData.news) {
                 html += `
-                    <div class="news-item">
-                        <div class="news-title">${item.title}</div>
-                        <div class="news-meta">
-                            <span>${item.source} • ${item.category}</span>
-                            <span class="impact-badge impact-${item.impact.toLowerCase()}">${item.impact}</span>
-                        </div>
+                    <div class="card" style="margin-bottom: 10px;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">${item.title}</div>
+                        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px;">${item.source} • ${item.category}</div>
                         <div style="font-size: 11px; color: var(--text-secondary);">${item.summary}</div>
                     </div>
                 `;
             }
             document.getElementById('news').innerHTML = html;
-        }
-
-        function renderCalendar() {
-            let html = `<div class="grid">`;
-            for (const event of allData.calendar) {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; font-weight: 700;">${new Date(event.date).toLocaleDateString()}</div>
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 8px;">${event.event}</div>
-                        <div class="data-row">
-                            <span class="data-label">Country</span>
-                            <span class="data-value" style="font-size: 12px;">${event.country}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Forecast</span>
-                            <span class="data-value">${event.forecast}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Previous</span>
-                            <span class="data-value">${event.previous}</span>
-                        </div>
-                        <div style="margin-top: 8px;">
-                            <span style="padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${event.importance === 'High' ? 'rgba(239, 68, 68, 0.2); color: var(--accent-down)' : 'rgba(99, 102, 241, 0.2); color: var(--accent-neutral)'}">${event.importance}</span>
-                        </div>
-                    </div>
-                `;
-            }
-            html += `</div>`;
-            document.getElementById('calendar').innerHTML = html;
         }
 
         function renderAllTabs() {
@@ -1001,29 +554,10 @@ function switchTab(tabName) {
             renderRealYields();
             renderCOT();
             renderCross();
-            renderCentralBank();
-            renderRisk();
-            renderSetups();
-            renderSurprises();
-            renderJuice();
             renderNews();
-            renderCalendar();
         }
 
-        // INITIAL LOAD
-        async function initDashboard() {
-            try {
-                const res = await fetch(`${API_URL}/api/dashboard`);
-                allData = await res.json();
-                selectedCurrency = 'USD'; // Initialize to USD
-                renderAllTabs();
-            } catch (e) {
-                console.error('Error fetching data:', e);
-            }
-        }
-        
         initDashboard();
-        setInterval(initDashboard, 60000);
     </script>
 </body>
 </html>
