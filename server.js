@@ -1,4 +1,5 @@
-const http = require('h
+const http = require('http');
+const PORT = process.env.PORT || 5000;
 
 const data = {
   // TOP STATS
