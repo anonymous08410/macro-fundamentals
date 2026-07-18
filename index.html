@@ -535,25 +535,119 @@
         }
 
         function renderJuice() {
-            if (!allData.g10Data) return;
-            let html = `<h3 style="margin-bottom: 20px;">💜 Financial Juice - Real-Time Macro Commentary</h3><div class="grid">`;
+            if (!allData.g10Data || !allData.news) return;
+            
+            let html = `<h3 style="margin-bottom: 20px;">💜 Financial Juice - Macro Updates & Headlines</h3>`;
+            
+            // Create macro commentary for each currency
+            const commentary = {
+                USD: {
+                    view: 'Fed holding 3.75%. Inflation at 4.2% - sticky but falling. NFP beat expectations (206K). Real yields at 1.85% - attractive for carry trades. Policy path uncertain post-Warsh.',
+                    setup: 'USD strength on real yield advantage. Watch for inflation surprise next month.'
+                },
+                EUR: {
+                    view: 'ECB on pause at 2.25%. Eurozone weakness (0.1% growth) argues for cuts by end-2026. Manufacturing PMI 48.5 - contracting. Real yields 0.65% - unattractive.',
+                    setup: 'EUR underperformance likely. EUR/USD downside risks to 1.06. Policy divergence trade vs USD.'
+                },
+                GBP: {
+                    view: 'BoE holding at 3.75%. UK labour market strong (5.2% wage growth). Inflation sticky at 3.8%. MPC divided but eventual cuts expected. Curve flat (2s10s: 0bp).',
+                    setup: 'GBP supported by labour strength but vulnerable if growth stalls. Cable near 1.27.'
+                },
+                JPY: {
+                    view: 'BoJ hiking to 1.00% (first move in cycle). Yen weak at 160 level - MoF intervention risk. Deflation concerns persist (CPI 1.9%). USD/JPY carry still attractive.',
+                    setup: 'Intervention risk near 160. BoJ data-dependent. Watch for Fed pivot risk.'
+                },
+                CAD: {
+                    view: 'BoC cutting aggressively (50bps expected this year). Labour market deteriorating (6.0% unemployment, -40K jobs). CPI 2.7%, declining. Real yields 1.55%.',
+                    setup: 'CAD weakness structural. USD/CAD 1.38 target. Commodity-linked but domestic weakness dominant.'
+                },
+                AUD: {
+                    view: 'RBA on hold at 3.60%. Commodity super-cycle intact (China stimulus). Labour tight (3.8% unemployment). Wage growth 4.2%. Real yields 0.95% (vs USD 1.85%).',
+                    setup: 'AUD supported by commodity cycle. Policy divergence vs Fed. AUD/USD 0.71 target.'
+                },
+                NZD: {
+                    view: 'RBNZ cutting this year (to 3.75% by year-end). Growth weak (0.1%), labour stable (3.6% unemployment). CPI falling (3.1%). Commodity dependent like AUD.',
+                    setup: 'NZD underperformance likely on rate cuts. NZD/USD 0.65 target vs current 0.62.'
+                },
+                CHF: {
+                    view: 'SNB cutting bias (1.50% current). Switzerland safe-haven demand high. Inflation low (1.4%), growth stalled (0.0%). Franc strength on geopolitical risk.',
+                    setup: 'CHF outperformer on safety. Real yields 0.45% but will compress with cuts.'
+                }
+            };
+
+            // Group news by currency
+            const newsByCountry = {
+                USD: [],
+                EUR: [],
+                GBP: [],
+                JPY: [],
+                CAD: [],
+                AUD: [],
+                NZD: [],
+                CHF: []
+            };
+
+            // Simple categorization of news
+            allData.news.forEach(news => {
+                if (news.title.includes('Fed') || news.category === 'Fed' || news.title.includes('US') || news.title.includes('USD')) {
+                    newsByCountry.USD.push(news);
+                } else if (news.title.includes('ECB') || news.category === 'ECB' || news.title.includes('Euro')) {
+                    newsByCountry.EUR.push(news);
+                } else if (news.title.includes('BoE') || news.category === 'BoE' || news.title.includes('Bank of England')) {
+                    newsByCountry.GBP.push(news);
+                } else if (news.title.includes('BoJ') || news.category === 'BoJ' || news.title.includes('Yen') || news.title.includes('JPY')) {
+                    newsByCountry.JPY.push(news);
+                } else if (news.title.includes('CAD') || news.title.includes('BoC') || news.title.includes('Canada')) {
+                    newsByCountry.CAD.push(news);
+                } else if (news.title.includes('AUD') || news.title.includes('RBA') || news.title.includes('Australia')) {
+                    newsByCountry.AUD.push(news);
+                } else if (news.title.includes('NZD') || news.title.includes('RBNZ') || news.title.includes('Zealand')) {
+                    newsByCountry.NZD.push(news);
+                } else if (news.title.includes('CHF') || news.title.includes('SNB') || news.title.includes('Switzerland')) {
+                    newsByCountry.CHF.push(news);
+                }
+            });
+
+            // Render each currency with commentary + news
             for (const [code, data] of Object.entries(allData.g10Data)) {
-                const sentiment = data.riskSentiment.riskSentiment;
+                const view = commentary[code];
+                const currNews = newsByCountry[code] || [];
+                
                 html += `
-                    <div class="card">
-                        <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); margin-bottom: 10px;">${code}</div>
-                        <div class="data-row"><span class="data-label">Policy Rate</span><span class="data-value">${data.rate}%</span></div>
-                        <div class="data-row"><span class="data-label">Inflation</span><span class="data-value">${data.inflation}%</span></div>
-                        <div class="data-row"><span class="data-label">Real 10Y</span><span class="data-value">${data.realYields.rea_10y}%</span></div>
-                        <div class="data-row"><span class="data-label">Growth</span><span class="data-value">${data.macroData.gdpGrowth}%</span></div>
-                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
-                            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px;">SENTIMENT</div>
-                            <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; background: ${sentiment === 'Risk-on' ? 'rgba(16, 185, 129, 0.2); color: var(--accent-up)' : 'rgba(239, 68, 68, 0.2); color: var(--accent-down)'}">${sentiment}</span>
+                    <div class="card" style="margin-bottom: 20px; padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <div style="font-size: 24px; font-weight: 700; color: var(--accent-purple); width: 40px;">${code}</div>
+                            <div>
+                                <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);">Policy Rate: ${data.rate}% | Inflation: ${data.inflation}%</div>
+                                <div style="font-size: 10px; color: var(--text-muted);">Real 10Y: ${data.realYields.rea_10y}% | Next: ${data.rateExpectation.next6m}%</div>
+                            </div>
                         </div>
+
+                        <div style="background: rgba(99, 102, 241, 0.05); padding: 12px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid var(--accent-neutral);">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--accent-neutral); margin-bottom: 6px; text-transform: uppercase;">Macro View</div>
+                            <div style="font-size: 12px; line-height: 1.6; color: var(--text-secondary);">${view.view}</div>
+                        </div>
+
+                        <div style="background: rgba(167, 139, 250, 0.05); padding: 12px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid var(--accent-purple);">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--accent-purple); margin-bottom: 6px; text-transform: uppercase;">Trading Setup</div>
+                            <div style="font-size: 12px; line-height: 1.6; color: var(--text-secondary);">${view.setup}</div>
+                        </div>
+
+                        ${currNews.length > 0 ? `
+                            <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">📰 Recent Headlines</div>
+                                ${currNews.slice(0, 2).map(news => `
+                                    <div style="margin-bottom: 8px; padding: 8px; background: rgba(${news.impact === 'High' ? '239, 68, 68' : '245, 158, 11'}, 0.1); border-radius: 3px;">
+                                        <div style="font-size: 11px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px;">${news.title}</div>
+                                        <div style="font-size: 10px; color: var(--text-muted);">${news.source} • ${news.category}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             }
-            html += '</div>';
+
             document.getElementById('juice').innerHTML = html;
         }
 
