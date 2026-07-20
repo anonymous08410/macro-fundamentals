@@ -502,25 +502,15 @@
     </div>
 
     <script>
-        // ⚠️ CHANGE THIS PASSWORD TO YOUR OWN!
-        const DASHBOARD_PASSWORD = "Mohammed2024"; // CHANGE THIS TO YOUR PASSWORD!
+        // ⚠️ PASSWORD TEMPORARILY DISABLED FOR TESTING
+        const DASHBOARD_PASSWORD = ""; // TEMP: Empty for testing
 
         function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            const errorMsg = document.getElementById('errorMessage');
-
-            if (password === DASHBOARD_PASSWORD) {
-                // Password correct
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('dashboardContainer').style.display = 'flex';
-                sessionStorage.setItem('authenticated', 'true');
-                initDashboard();
-            } else {
-                // Wrong password
-                errorMsg.style.display = 'block';
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-            }
+            // Skip password check - bypass for testing
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboardContainer').style.display = 'flex';
+            sessionStorage.setItem('authenticated', 'true');
+            initDashboard();
         }
 
         function logout() {
