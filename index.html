@@ -531,12 +531,26 @@
 
         async function initDashboard() {
             try {
-                const res = await fetch(`${API_URL}/api/dashboard`);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                const res = await fetch(`${API_URL}/api/dashboard`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 allData = await res.json();
                 renderAllTabs();
             } catch (e) {
-                console.error('Error:', e);
+                console.error('API Error:', e);
+                // Show error message but keep dashboard visible with placeholder data
+                const topBar = document.getElementById('topBar');
+                if (topBar) {
+                    topBar.innerHTML = `<div style="color: var(--accent-down); font-weight: 700;">⚠️ Backend loading... Refresh page in 5 seconds</div>`;
+                }
+                // Retry after 5 seconds
+                setTimeout(() => {
+                    location.reload();
+                }, 5000);
             }
         }
 
