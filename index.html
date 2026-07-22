@@ -445,7 +445,7 @@
                     placeholder="Enter password"
                 >
             </div>
-            <button class="login-btn" onclick="document.getElementById('loginScreen').style.display='none'; document.getElementById('dashboardContainer').style.display='flex'; initDashboard();">🔓 Access Dashboard</button>
+            <button class="login-btn" id="loginBtn">🔓 Access Dashboard</button>
             <div class="error-message" id="errorMessage">❌ Incorrect password. Try again.</div>
         </div>
     </div>
@@ -455,6 +455,7 @@
         <div class="top-bar">
             <div class="top-bar-left" id="topBar">Loading...</div>
             <div class="top-bar-right">
+                <button class="logout-btn" onclick="location.reload()">🔄 Reload</button>
                 <button class="logout-btn" onclick="logout()">🔒 Logout</button>
             </div>
         </div>
@@ -521,6 +522,16 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboardContainer').style.display = 'flex';
             initDashboard();
+            
+            // Add login button listener
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboardContainer').style.display = 'flex';
+                    initDashboard();
+                });
+            }
         });
 
         // === DASHBOARD CODE STARTS HERE ===
@@ -557,11 +568,15 @@
 
         async function initDashboard() {
             try {
+                console.log('Initializing dashboard...');
                 // Use hardcoded data instead of API
                 allData = getHardcodedData();
+                console.log('Loaded data:', allData);
                 renderAllTabs();
+                console.log('Dashboard rendered successfully!');
             } catch (e) {
-                console.error('Error:', e);
+                console.error('Dashboard initialization error:', e);
+                alert('Error loading dashboard: ' + e.message);
             }
         }
 
@@ -839,7 +854,11 @@
         }
 
         function renderTopBar() {
-            if (!allData.topStats) return;
+            if (!allData || !allData.topStats) {
+                console.warn('Missing topStats data', allData);
+                document.getElementById('topBar').innerHTML = '<div style="color: red;">Data loading...</div>';
+                return;
+            }
             const stats = allData.topStats;
             let html = `
                 <div class="stat"><span>DOT</span><span class="stat-value">${stats.dot.value}%</span></div>
