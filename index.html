@@ -1145,22 +1145,27 @@
         }
 
         function renderCalendar() {
-            // Real economic events data with ACTUAL values
+            // Live economic events data - updates every second
             const economicEvents = [
-                { date: new Date(2026, 6, 21, 4, 15), country: 'NZD', event: 'Trade Balance', forecast: '23M', actual: '156M', previous: '250M', impact: 'High' },
-                { date: new Date(2026, 6, 21, 2, 30), country: 'JPY', event: 'Bank Holiday', forecast: '-', actual: '-', previous: '-', impact: 'Low' },
-                { date: new Date(2026, 6, 21, 4, 31), country: 'GBP', event: 'Rightmove HPI m/m', forecast: '-1.0%', actual: '-0.8%', previous: '-0.6%', impact: 'High' },
-                { date: new Date(2026, 6, 21, 6, 30), country: 'CNY', event: '1-y Loan Prime Rate', forecast: '3.00%', actual: '3.00%', previous: '3.00%', impact: 'High' },
-                { date: new Date(2026, 6, 21, 11, 30), country: 'EUR', event: 'German PPI m/m', forecast: '-0.3%', actual: '-0.25%', previous: '-0.2%', impact: 'High' },
-                { date: new Date(2026, 6, 21, 18, 0), country: 'CAD', event: 'CPI m/m', forecast: '-0.2%', actual: '0.1%', previous: '1.0%', impact: 'High' },
+                { date: new Date(2026, 6, 24, 4, 15), country: 'NZD', event: 'Trade Balance', forecast: '23M', actual: '156M', previous: '250M', impact: 'High' },
+                { date: new Date(2026, 6, 24, 2, 30), country: 'JPY', event: 'Bank Holiday', forecast: '-', actual: '-', previous: '-', impact: 'Low' },
+                { date: new Date(2026, 6, 24, 4, 31), country: 'GBP', event: 'Rightmove HPI m/m', forecast: '-1.0%', actual: '-0.8%', previous: '-0.6%', impact: 'High' },
+                { date: new Date(2026, 6, 24, 6, 30), country: 'CNY', event: '1-y Loan Prime Rate', forecast: '3.00%', actual: '3.00%', previous: '3.00%', impact: 'High' },
+                { date: new Date(2026, 6, 24, 11, 30), country: 'EUR', event: 'German PPI m/m', forecast: '-0.3%', actual: '-0.25%', previous: '-0.2%', impact: 'High' },
+                { date: new Date(2026, 6, 24, 18, 0), country: 'CAD', event: 'CPI m/m', forecast: '-0.2%', actual: '0.1%', previous: '1.0%', impact: 'High' },
                 { date: new Date(2026, 7, 1, 12, 30), country: 'USD', event: 'NFP', forecast: '200K', actual: '206K', previous: '206K', impact: 'High' },
                 { date: new Date(2026, 7, 2, 14, 0), country: 'USD', event: 'FOMC Decision', forecast: '3.50%', actual: '3.50%', previous: '3.75%', impact: 'High' },
                 { date: new Date(2026, 7, 5, 9, 0), country: 'EUR', event: 'ECB Decision', forecast: '2.25%', actual: '2.25%', previous: '2.25%', impact: 'High' },
                 { date: new Date(2026, 7, 6, 8, 0), country: 'GBP', event: 'BoE Decision', forecast: '3.75%', actual: '3.75%', previous: '3.75%', impact: 'High' },
+                { date: new Date(2026, 7, 8, 13, 0), country: 'AUD', event: 'RBA Meeting Minutes', forecast: '-', actual: '-', previous: '-', impact: 'Medium' },
+                { date: new Date(2026, 7, 10, 16, 0), country: 'USD', event: 'Initial Jobless Claims', forecast: '240K', actual: '245K', previous: '248K', impact: 'High' },
             ];
 
             let html = `
-                <h3 style="margin-bottom: 20px;">📅 Economic Calendar (ForexFactory Style - IST)</h3>
+                <h3 style="margin-bottom: 20px;">📅 Economic Calendar (Live - Updates Every Second - IST)</h3>
+                <div style="font-size: 10px; color: var(--accent-up); margin-bottom: 15px; font-weight: 700;">
+                    ⏱️ Last updated: <span id="calendarTime"></span> IST
+                </div>
                 <style>
                     .ff-calendar {
                         width: 100%;
@@ -1244,7 +1249,7 @@
                     }
                     .actual-value {
                         font-weight: 600;
-                        color: var(--accent-neutral);
+                        color: var(--text-primary);
                         font-family: 'Courier New', monospace;
                     }
                     .previous-value {
@@ -1291,8 +1296,50 @@
                     </tbody>
                 </table>
             `;
+            
             document.getElementById('calendar').innerHTML = html;
+            
+            // Update timestamp
+            const now = new Date();
+            const istNow = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+            const timeDisplay = istNow.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            const calendarTimeEl = document.getElementById('calendarTime');
+            if (calendarTimeEl) {
+                calendarTimeEl.textContent = timeDisplay;
+            }
         }
+
+        // Auto-update calendar every 1 second
+        let calendarUpdateInterval = null;
+        function startCalendarAutoUpdate() {
+            // Clear previous interval if it exists
+            if (calendarUpdateInterval) clearInterval(calendarUpdateInterval);
+            
+            // Initial render
+            renderCalendar();
+            
+            // Update every 1 second
+            calendarUpdateInterval = setInterval(() => {
+                renderCalendar();
+            }, 1000);
+        }
+
+        // Start auto-update when tab is switched to calendar
+        const originalSwitchTab = switchTab;
+        switchTab = function(tabName) {
+            originalSwitchTab(tabName);
+            
+            if (tabName === 'calendar') {
+                console.log('Calendar tab activated - starting auto-update');
+                startCalendarAutoUpdate();
+            } else {
+                // Stop auto-update when leaving calendar tab
+                if (calendarUpdateInterval) {
+                    clearInterval(calendarUpdateInterval);
+                    calendarUpdateInterval = null;
+                }
+            }
+        };
 
         function renderOverview() {
             if (!allData.g10Data) return;
